@@ -11,12 +11,19 @@ import { ListingCard } from '@/components/listing-card';
 export const revalidate = 600; // SSG + ISR
 
 export async function generateStaticParams() {
-  const facets = await getFacets();
+  // Prerender only tipo×departamento combos that have ≥1 listing; empty combos
+  // still render on demand (with noindex) via dynamicParams.
+  const all = await getListings();
+  const seen = new Set<string>();
   const params: Array<{ tipo: string; departamento: string }> = [];
-  for (const t of facets.tipos) {
-    for (const d of facets.departamentos) {
-      params.push({ tipo: tipoToSlug(t.tipo), departamento: kebab(d.nombre) });
-    }
+  for (const l of all) {
+    const key = `${l.tipo}|${l.ubicacion.departamento}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    params.push({
+      tipo: tipoToSlug(l.tipo),
+      departamento: kebab(l.ubicacion.departamento),
+    });
   }
   return params;
 }

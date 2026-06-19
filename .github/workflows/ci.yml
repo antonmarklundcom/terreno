@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Build only needs the minimum-viable public subset.
+          NEXT_PUBLIC_SITE_URL: https://terreno.com.py
+          NEXT_PUBLIC_WHATSAPP: '595981000000'
+          NEXT_PUBLIC_BUSINESS_NAME: Terreno

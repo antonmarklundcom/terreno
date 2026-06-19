@@ -11,18 +11,19 @@ import { ListingCard } from '@/components/listing-card';
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const facets = await getFacets();
+  // Prerender only tipo×departamento×ciudad combos that have ≥1 listing.
+  const all = await getListings();
+  const seen = new Set<string>();
   const params: Array<{ tipo: string; departamento: string; ciudad: string }> = [];
-  for (const t of facets.tipos) {
-    for (const d of facets.departamentos) {
-      for (const c of d.ciudades) {
-        params.push({
-          tipo: tipoToSlug(t.tipo),
-          departamento: kebab(d.nombre),
-          ciudad: kebab(c.nombre),
-        });
-      }
-    }
+  for (const l of all) {
+    const key = `${l.tipo}|${l.ubicacion.departamento}|${l.ubicacion.ciudad}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    params.push({
+      tipo: tipoToSlug(l.tipo),
+      departamento: kebab(l.ubicacion.departamento),
+      ciudad: kebab(l.ubicacion.ciudad),
+    });
   }
   return params;
 }
