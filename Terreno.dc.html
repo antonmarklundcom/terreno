@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#e7e5df;}
+  ::selection{background:#cfe3d8;}
+</style>
+</helmet>
+<div style="font-family:'Schibsted Grotesk',system-ui,sans-serif;background:#e7e5df;min-width:100%;width:max-content;min-height:100vh;box-sizing:border-box;padding:48px;-webkit-font-smoothing:antialiased;color:#16170f;">
+  <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#8a8b80;font-weight:700;margin-bottom:8px;">terreno.com.py</div>
+  <div style="font-size:27px;font-weight:700;letter-spacing:-0.015em;color:#16170f;margin:0 0 6px;max-width:760px;line-height:1.15;">Portal de tierras — minimalismo escandinavo, mapa y datos primero</div>
+  <div style="font-size:14px;color:#6f7167;margin-bottom:40px;max-width:680px;line-height:1.5;">Diseñado mobile-first a 360&nbsp;px · UI en español · US$ como moneda principal, Gs. secundaria · un solo acento verde tierra sobre neutros cálidos.</div>
+  <div style="margin-bottom:44px;">
+    <div style="font-size:12px;font-weight:700;color:#6f7167;margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">01 · Home</div>
+    <div style="display:flex;gap:40px;align-items:flex-start;">
+
+      <!-- ===== HOME A : vertical dual-path ===== -->
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Opción A — doble camino vertical</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 16px;background:#fff;border-bottom:1px solid #efece5;">
+            <div style="font-size:19px;font-weight:700;letter-spacing:-0.02em;">terreno<span style="color:#b3b4aa;font-weight:500;">.com.py</span></div>
+            <div style="display:flex;gap:16px;align-items:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </div>
+          </div>
+
+          <div style="padding:22px 16px 8px;">
+            <h1 style="font-size:25px;line-height:1.12;font-weight:700;letter-spacing:-0.025em;margin:0 0 8px;text-wrap:balance;">Terrenos en Paraguay, con datos claros.</h1>
+            <p style="font-size:14px;line-height:1.5;color:#6f7167;margin:0 0 20px;">Lotes, campos, quintas y loteamientos — ubicación, superficie y título verificados, sin vueltas.</p>
+          </div>
+
+          <!-- Buyer search card -->
+          <div style="margin:0 16px;background:#fff;border:1px solid #e7e3da;border-radius:14px;padding:16px;box-shadow:0 4px 18px rgba(22,23,15,.05);">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#16170f;margin-bottom:13px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#1f6b4a;"></span>Comprar terreno
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Departamento</div><div style="font-size:15px;font-weight:500;">Central</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Ciudad / Distrito</div><div style="font-size:15px;font-weight:500;">Luque</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Barrio / Zona <span style="text-transform:none;letter-spacing:0;color:#b3b4aa;font-weight:500;">· opcional</span></div><div style="font-size:15px;font-weight:500;color:#9a9b92;">Todos los barrios</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin:15px 0 8px;">Tipo de terreno</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;">
+              <span style="font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:20px;background:#1f6b4a;color:#fff;">Lote urbano</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Terreno comercial</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Campo</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Quinta</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Loteamiento</span>
+            </div>
+            <button style="width:100%;border:none;background:#1f6b4a;color:#fff;font-family:inherit;font-size:15px;font-weight:600;padding:14px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:16px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Buscar terrenos
+            </button>
+          </div>
+
+          <!-- Seller CTA card (equally prominent) -->
+          <div style="margin:14px 16px 0;background:#184e36;border-radius:14px;padding:20px;color:#eaf2ec;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;opacity:0.5;">
+              <svg viewBox="0 0 360 160" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><g stroke="#2f6a4d" stroke-width="1" fill="none"><line x1="60" y1="0" x2="60" y2="160"/><line x1="140" y1="0" x2="140" y2="160"/><line x1="240" y1="0" x2="240" y2="160"/><line x1="320" y1="0" x2="320" y2="160"/><line x1="0" y1="48" x2="360" y2="48"/><line x1="0" y1="108" x2="360" y2="108"/></g><polygon points="140,48 240,48 240,108 140,108" fill="#2f7a55" fill-opacity="0.55"/></svg>
+            </div>
+            <div style="position:relative;">
+              <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#9fd3b6;margin-bottom:9px;">
+                <span style="width:7px;height:7px;border-radius:50%;background:#9fd3b6;"></span>Vendé tu terreno
+              </div>
+              <div style="font-size:22px;font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin-bottom:6px;color:#fff;">Conocé el valor real de tu terreno</div>
+              <p style="font-size:13.5px;line-height:1.5;color:#bcd6c5;margin:0 0 16px;">Lo valuamos con datos de la zona, lo publicamos y lo vendemos por vos. Tasación sin costo.</p>
+              <button style="border:none;background:#fff;color:#184e36;font-family:inherit;font-size:14px;font-weight:700;padding:12px 18px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;">Calcular valor gratis
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#184e36" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Featured strip -->
+          <div style="padding:30px 0 0;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 16px;margin-bottom:13px;">
+              <div style="font-size:17px;font-weight:700;letter-spacing:-0.015em;">Destacados</div>
+              <a style="font-size:13px;font-weight:600;color:#1f6b4a;text-decoration:none;">Ver todos</a>
+            </div>
+            <div style="display:flex;gap:11px;overflow-x:auto;padding:0 16px 6px;">
+              <sc-for list="{{ featured }}" as="f" hint-placeholder-count="3">
+                <div style="flex:none;width:236px;background:#fff;border:1px solid #e9e6df;border-radius:12px;overflow:hidden;">
+                  <div style="position:relative;height:118px;background:#ece6d9;">
+                    {{ f.map }}
+                    <span style="position:absolute;top:9px;left:9px;font-size:11px;font-weight:600;background:rgba(255,255,255,.93);color:#4a4c43;padding:4px 9px;border-radius:20px;">{{ f.type }}</span>
+                  </div>
+                  <div style="padding:11px 12px 13px;">
+                    <div style="font-size:16px;font-weight:700;letter-spacing:-0.01em;">{{ f.price }}</div>
+                    <div style="font-size:12px;color:#6f7167;margin-top:1px;">{{ f.area }} · {{ f.per }}</div>
+                    <div style="font-size:13px;font-weight:500;margin-top:7px;">{{ f.title }}</div>
+                    <div style="display:flex;align-items:center;gap:4px;font-size:12px;color:#9a9b92;margin-top:3px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                      {{ f.loc }}
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- Trust band -->
+          <div style="margin:30px 16px 0;background:#f1f4ef;border:1px solid #e2e9e1;border-radius:14px;padding:20px 18px;">
+            <div style="font-size:16px;font-weight:700;letter-spacing:-0.015em;margin-bottom:16px;">Por qué confiar en nosotros</div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="flex:none;width:34px;height:34px;border-radius:9px;background:#e1ece5;display:flex;align-items:center;justify-content:center;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>
+                </div>
+                <div><div style="font-size:14px;font-weight:600;">Título verificado</div><div style="font-size:13px;color:#6f7167;line-height:1.45;">Revisamos el estado de título antes de publicar.</div></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="flex:none;width:34px;height:34px;border-radius:9px;background:#e1ece5;display:flex;align-items:center;justify-content:center;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                </div>
+                <div><div style="font-size:14px;font-weight:600;">Medidas y límites claros</div><div style="font-size:13px;color:#6f7167;line-height:1.45;">Superficie, frente y ubicación sobre mapa real.</div></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;">
+                <div style="flex:none;width:34px;height:34px;border-radius:9px;background:#e1ece5;display:flex;align-items:center;justify-content:center;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                </div>
+                <div><div style="font-size:14px;font-weight:600;">Acompañamiento local</div><div style="font-size:13px;color:#6f7167;line-height:1.45;">Tasadores y agrimensores en cada departamento.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guides + services entry -->
+          <div style="padding:30px 16px 0;">
+            <div style="font-size:17px;font-weight:700;letter-spacing:-0.015em;margin-bottom:13px;">Guías para invertir</div>
+            <div style="display:flex;flex-direction:column;gap:1px;border:1px solid #e9e6df;border-radius:12px;overflow:hidden;">
+              <a style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:#fff;text-decoration:none;color:#16170f;">
+                <span style="font-size:14px;font-weight:500;line-height:1.35;">Cómo verificar el título de un terreno</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+              <a style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:#fff;border-top:1px solid #efece5;text-decoration:none;color:#16170f;">
+                <span style="font-size:14px;font-weight:500;line-height:1.35;">Invertir en tierra en Paraguay: guía 2026</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+              <a style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:#fff;border-top:1px solid #efece5;text-decoration:none;color:#16170f;">
+                <span style="font-size:14px;font-weight:500;line-height:1.35;">¿Qué hace un agrimensor y cuándo lo necesitás?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div style="padding:24px 16px 0;">
+            <div style="font-size:17px;font-weight:700;letter-spacing:-0.015em;margin-bottom:13px;">Servicios</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px;"><div style="font-size:14px;font-weight:600;">Tasación</div><div style="font-size:12.5px;color:#6f7167;margin-top:3px;line-height:1.4;">Valor de mercado con datos de la zona.</div></div>
+              <div style="background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px;"><div style="font-size:14px;font-weight:600;">Revisión de título</div><div style="font-size:12.5px;color:#6f7167;margin-top:3px;line-height:1.4;">Verificación legal antes de comprar.</div></div>
+              <div style="background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px;"><div style="font-size:14px;font-weight:600;">Agrimensura</div><div style="font-size:12.5px;color:#6f7167;margin-top:3px;line-height:1.4;">Medición de límites y frente.</div></div>
+              <div style="background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px;"><div style="font-size:14px;font-weight:600;">Financiación</div><div style="font-size:12.5px;color:#6f7167;margin-top:3px;line-height:1.4;">Comparar contado y cuotas.</div></div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div style="margin-top:30px;background:#16170f;color:#c9cabf;padding:24px 16px;">
+            <div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:4px;">terreno<span style="color:#6f7167;font-weight:500;">.com.py</span></div>
+            <div style="font-size:12.5px;line-height:1.5;color:#8a8b80;max-width:280px;margin-bottom:16px;">El portal de tierras de Paraguay. Lotes, campos, quintas y loteamientos con datos verificados.</div>
+            <div style="display:flex;flex-wrap:wrap;gap:14px 22px;font-size:12.5px;">
+              <span>Comprar</span><span>Vender</span><span>Servicios</span><span>Guías</span><span>Contacto</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== HOME B : tabbed hero variation ===== -->
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Opción B — hero con pestañas (interactivo)</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 16px;background:#fff;border-bottom:1px solid #efece5;">
+            <div style="font-size:19px;font-weight:700;letter-spacing:-0.02em;">terreno<span style="color:#b3b4aa;font-weight:500;">.com.py</span></div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </div>
+
+          <!-- Map-motif hero header -->
+          <div style="position:relative;height:150px;background:#ece6d9;">
+            {{ detailMap }}
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,250,249,0) 30%,#fafaf9 100%);"></div>
+            <div style="position:absolute;left:16px;right:16px;bottom:14px;">
+              <h1 style="font-size:24px;font-weight:700;letter-spacing:-0.025em;line-height:1.1;margin:0;text-wrap:balance;">Comprá o vendé tierra, con datos claros.</h1>
+            </div>
+          </div>
+
+          <!-- Segmented control -->
+          <div style="padding:18px 16px 0;">
+            <div style="display:flex;background:#eceae3;border-radius:11px;padding:4px;gap:4px;">
+              <button onClick="{{ showComprar }}" style="flex:1;border:none;font-family:inherit;font-size:14px;font-weight:600;padding:10px;border-radius:8px;cursor:pointer;background:{{ heroComprarBg }};color:{{ heroComprarFg }};">Comprar</button>
+              <button onClick="{{ showVender }}" style="flex:1;border:none;font-family:inherit;font-size:14px;font-weight:600;padding:10px;border-radius:8px;cursor:pointer;background:{{ heroVenderBg }};color:{{ heroVenderFg }};">Vender</button>
+            </div>
+          </div>
+
+          <sc-if value="{{ heroComprar }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fff;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Departamento</div><div style="font-size:15px;font-weight:500;">Central</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fff;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Ciudad / Distrito</div><div style="font-size:15px;font-weight:500;color:#9a9b92;">Todas</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:13px;">
+              <span style="font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:20px;background:#1f6b4a;color:#fff;">Lote urbano</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Campo</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Quinta</span>
+              <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Comercial</span>
+            </div>
+            <button style="width:100%;border:none;background:#1f6b4a;color:#fff;font-family:inherit;font-size:15px;font-weight:600;padding:14px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-top:14px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Buscar terrenos
+            </button>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ heroVender }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px;">
+            <p style="font-size:14px;line-height:1.5;color:#4a4c43;margin:2px 0 14px;">Decinos dónde está tu terreno y cuánto mide. Te damos una tasación gratis en 48&nbsp;h.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fff;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Ubicación</div><div style="font-size:15px;font-weight:500;color:#9a9b92;">Departamento, ciudad…</div></div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#fff;border:1px solid #e7e3da;border-radius:10px;">
+                <div><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;margin-bottom:2px;">Superficie</div><div style="font-size:15px;font-weight:500;color:#9a9b92;">m² o ha</div></div>
+              </div>
+            </div>
+            <button style="width:100%;border:none;background:#184e36;color:#fff;font-family:inherit;font-size:15px;font-weight:700;padding:14px;border-radius:10px;cursor:pointer;margin-top:14px;">Quiero mi tasación gratis</button>
+            <button style="width:100%;border:none;background:#25D366;color:#fff;font-family:inherit;font-size:14px;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;margin-top:9px;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="#fff"><path d="M16 .5C7.5.5.6 7.4.6 15.9c0 2.8.7 5.4 2 7.8L.5 31.5l8-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.5 16 .5zm0 28.1c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.8 1.3 1.3-4.6-.3-.5c-1.3-2.1-2-4.5-2-7 0-7.1 5.8-12.9 12.9-12.9S28.9 8.9 28.9 16 23.1 28.6 16 28.6zm7.1-9.4c-.4-.2-2.3-1.1-2.6-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.2-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7s-.9-2.1-1.2-2.9c-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-1 .5-.3.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.1-.3-.2-.7-.4z"/></svg>
+              Escribir por WhatsApp
+            </button>
+          </div>
+          </sc-if>
+
+          <div style="padding:4px 16px 22px;">
+            <div style="font-size:12px;color:#9a9b92;line-height:1.5;border-top:1px solid #efece5;padding-top:14px;">Variación de hero: un control segmentado <b style="color:#4a4c43;font-weight:600;">Comprar / Vender</b> resuelve el doble camino en un solo bloque. Probá las pestañas — cambian en vivo.</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-bottom:44px;">
+    <div style="font-size:12px;font-weight:700;color:#6f7167;margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">02 · Resultados de búsqueda</div>
+    <div style="display:flex;gap:40px;align-items:flex-start;margin-bottom:36px;">
+
+      <!-- ===== SEARCH RESULTS (mobile, list + map peek) ===== -->
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Móvil — lista con vista de mapa</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;">
+
+          <!-- App bar with search summary -->
+          <div style="display:flex;align-items:center;gap:11px;padding:12px 14px;background:#fff;border-bottom:1px solid #efece5;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <div style="flex:1;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;padding:8px 12px;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#9a9b92;">Central · Luque</div>
+              <div style="font-size:13px;font-weight:500;">Lote urbano · Todos los barrios</div>
+            </div>
+          </div>
+
+          <!-- Filter chips bar -->
+          <div style="display:flex;gap:7px;overflow-x:auto;padding:11px 14px;background:#fff;border-bottom:1px solid #efece5;">
+            <span style="flex:none;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;background:#16170f;color:#fff;padding:7px 13px;border-radius:20px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              Filtros
+            </span>
+            <span style="flex:none;font-size:12.5px;font-weight:500;background:#fff;border:1px solid #e3e0d8;padding:7px 13px;border-radius:20px;color:#4a4c43;">Superficie</span>
+            <span style="flex:none;font-size:12.5px;font-weight:500;background:#fff;border:1px solid #e3e0d8;padding:7px 13px;border-radius:20px;color:#4a4c43;">Precio</span>
+            <span style="flex:none;font-size:12.5px;font-weight:500;background:#fff;border:1px solid #e3e0d8;padding:7px 13px;border-radius:20px;color:#4a4c43;">Servicios</span>
+          </div>
+
+          <!-- Map peek -->
+          <div style="position:relative;height:140px;background:#ece6d9;border-bottom:1px solid #efece5;">
+            {{ detailMap }}
+            <span style="position:absolute;top:48px;left:120px;font-size:11px;font-weight:700;background:#16170f;color:#fff;padding:4px 9px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.25);">US$ 28.5k</span>
+            <span style="position:absolute;top:84px;left:210px;font-size:11px;font-weight:700;background:#fff;color:#16170f;padding:4px 9px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.2);">US$ 65k</span>
+            <span style="position:absolute;top:36px;left:248px;font-size:11px;font-weight:700;background:#fff;color:#16170f;padding:4px 9px;border-radius:20px;box-shadow:0 2px 6px rgba(0,0,0,.2);">US$ 190k</span>
+            <button style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);border:none;background:#fff;color:#16170f;font-family:inherit;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/></svg>
+              Ver mapa completo
+            </button>
+          </div>
+
+          <!-- Results header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;">
+            <div style="font-size:14px;font-weight:600;"><b style="font-weight:700;">128</b> terrenos</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:13px;color:#6f7167;">Ordenar: <span style="font-weight:600;color:#16170f;">Relevancia</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card list -->
+          <div style="display:flex;flex-direction:column;gap:14px;padding:0 14px 18px;">
+            <sc-for list="{{ listings }}" as="item" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #e9e6df;border-radius:14px;overflow:hidden;">
+                <div style="position:relative;height:158px;background:#ece6d9;">
+                  {{ item.map }}
+                  <span style="position:absolute;top:10px;left:10px;font-size:11px;font-weight:600;background:rgba(255,255,255,.93);color:#4a4c43;padding:4px 10px;border-radius:20px;">{{ item.type }}</span>
+                  <sc-if value="{{ item.tituloCon }}" hint-placeholder-val="{{ true }}">
+                    <span style="position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;background:rgba(255,255,255,.93);color:#1f6b4a;padding:4px 9px;border-radius:20px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Con título</span>
+                  </sc-if>
+                  <sc-if value="{{ item.tituloProceso }}" hint-placeholder-val="{{ true }}">
+                    <span style="position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;background:rgba(255,255,255,.93);color:#a9772a;padding:4px 9px;border-radius:20px;">Título en proceso</span>
+                  </sc-if>
+                </div>
+                <div style="padding:14px;">
+                  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+                    <div style="font-size:19px;font-weight:700;letter-spacing:-0.015em;">{{ item.price }}</div>
+                    <div style="font-size:13px;font-weight:600;color:#1f6b4a;">{{ item.per }}</div>
+                  </div>
+                  <sc-if value="{{ showGs }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#9a9b92;margin-top:1px;">{{ item.priceGs }}</div></sc-if>
+                  <div style="font-size:15px;font-weight:600;margin-top:9px;">{{ item.title }}</div>
+                  <div style="display:flex;align-items:center;gap:5px;font-size:13px;color:#6f7167;margin-top:3px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    {{ item.loc }}
+                  </div>
+                  <div style="font-size:13px;color:#4a4c43;margin-top:10px;font-weight:600;">{{ item.area }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;">
+                    <sc-for list="{{ item.servicios }}" as="s" hint-placeholder-count="3">
+                      <span style="display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:#4a4c43;background:#f3f1ea;padding:4px 9px;border-radius:7px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>{{ s }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="margin-top:12px;border-top:1px solid #efece5;padding-top:11px;">
+                    <span style="font-size:11.5px;font-weight:600;color:#1f6b4a;background:#eef3ef;border:1px solid #dbe7df;padding:4px 11px;border-radius:7px;">{{ item.financ }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== FILTERS SHEET (mobile) ===== -->
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Móvil — panel de filtros</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;position:relative;">
+          <div style="position:absolute;inset:0;background:rgba(22,23,15,.32);"></div>
+          <div style="position:relative;margin-top:54px;background:#fff;border-radius:18px 18px 0 0;min-height:560px;">
+            <div style="width:38px;height:4px;border-radius:4px;background:#dcd8cf;margin:10px auto 0;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #efece5;">
+              <div style="font-size:17px;font-weight:700;letter-spacing:-0.015em;">Filtros</div>
+              <span style="font-size:13px;font-weight:600;color:#1f6b4a;">Limpiar</span>
+            </div>
+            <div style="padding:18px;display:flex;flex-direction:column;gap:22px;">
+
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Ubicación</div>
+                <div style="display:flex;flex-direction:column;gap:7px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;font-weight:500;">Central <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;font-weight:500;">Luque <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;font-weight:500;color:#9a9b92;">Barrio · opcional <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Tipo</div>
+                <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                  <span style="font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:20px;background:#1f6b4a;color:#fff;">Lote urbano</span>
+                  <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Comercial</span>
+                  <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Campo</span>
+                  <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Quinta</span>
+                  <span style="font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;background:#fff;border:1px solid #e3e0d8;color:#4a4c43;">Loteamiento</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+                  <div style="font-size:13px;font-weight:700;">Superficie</div>
+                  <div style="display:flex;background:#eceae3;border-radius:8px;padding:3px;gap:3px;">
+                    <span style="font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:6px;background:#fff;color:#16170f;">m²</span>
+                    <span style="font-size:11.5px;font-weight:600;padding:4px 11px;border-radius:6px;color:#6f7167;">ha</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;">
+                  <div style="flex:1;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;color:#9a9b92;">mín. m²</div>
+                  <span style="color:#b3b4aa;">—</span>
+                  <div style="flex:1;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;color:#9a9b92;">máx. m²</div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+                  <div style="font-size:13px;font-weight:700;">Precio</div>
+                  <div style="display:flex;background:#eceae3;border-radius:8px;padding:3px;gap:3px;">
+                    <span style="font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:6px;background:#fff;color:#16170f;">US$</span>
+                    <span style="font-size:11.5px;font-weight:600;padding:4px 11px;border-radius:6px;color:#6f7167;">Gs.</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;">
+                  <div style="flex:1;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;color:#9a9b92;">US$ mín.</div>
+                  <span style="color:#b3b4aa;">—</span>
+                  <div style="flex:1;padding:10px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:9px;font-size:14px;color:#9a9b92;">US$ máx.</div>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Servicios</div>
+                <div style="display:flex;flex-direction:column;gap:11px;">
+                  <label style="display:flex;align-items:center;gap:10px;font-size:14px;"><span style="width:20px;height:20px;border-radius:6px;background:#1f6b4a;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>Agua / ESSAP</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:14px;"><span style="width:20px;height:20px;border-radius:6px;background:#1f6b4a;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>Energía / ANDE</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4a4c43;"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #d4d0c6;"></span>Desagüe</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4a4c43;"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #d4d0c6;"></span>Asfalto / empedrado</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#4a4c43;"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #d4d0c6;"></span>Internet</label>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Financiación</div>
+                <div style="display:flex;gap:8px;">
+                  <span style="flex:1;text-align:center;font-size:13px;font-weight:600;padding:9px;border-radius:9px;border:1.5px solid #1f6b4a;background:#eef3ef;color:#1f6b4a;">Contado</span>
+                  <span style="flex:1;text-align:center;font-size:13px;font-weight:500;padding:9px;border-radius:9px;border:1px solid #e3e0d8;color:#4a4c43;">Cuotas</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:9px;">Estado de título</div>
+                <div style="display:flex;gap:8px;">
+                  <span style="flex:1;text-align:center;font-size:13px;font-weight:600;padding:9px;border-radius:9px;border:1.5px solid #1f6b4a;background:#eef3ef;color:#1f6b4a;">Con título</span>
+                  <span style="flex:1;text-align:center;font-size:13px;font-weight:500;padding:9px;border-radius:9px;border:1px solid #e3e0d8;color:#4a4c43;">En proceso</span>
+                </div>
+              </div>
+
+            </div>
+            <div style="position:sticky;bottom:0;padding:14px 18px;background:#fff;border-top:1px solid #efece5;">
+              <button style="width:100%;border:none;background:#1f6b4a;color:#fff;font-family:inherit;font-size:15px;font-weight:600;padding:14px;border-radius:10px;cursor:pointer;">Ver 128 terrenos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== SEARCH RESULTS (desktop split — Hemnet signature) ===== -->
+    <div style="flex:none;width:1280px;">
+      <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Escritorio — vista dividida mapa / lista</div>
+      <div style="width:1280px;height:840px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;display:flex;flex-direction:column;">
+
+        <!-- top nav -->
+        <div style="display:flex;align-items:center;gap:24px;padding:14px 28px;background:#fff;border-bottom:1px solid #efece5;flex:none;">
+          <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;">terreno<span style="color:#b3b4aa;font-weight:500;">.com.py</span></div>
+          <div style="display:flex;align-items:center;gap:0;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;overflow:hidden;">
+            <div style="padding:8px 16px;border-right:1px solid #e7e3da;"><div style="font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;">Depto</div><div style="font-size:13px;font-weight:600;">Central</div></div>
+            <div style="padding:8px 16px;border-right:1px solid #e7e3da;"><div style="font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;">Ciudad</div><div style="font-size:13px;font-weight:600;">Luque</div></div>
+            <div style="padding:8px 16px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9a9b92;">Tipo</div><div style="font-size:13px;font-weight:600;">Lote urbano</div></div>
+            <button style="border:none;background:#1f6b4a;color:#fff;padding:0 18px;align-self:stretch;cursor:pointer;display:flex;align-items:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+          </div>
+          <div style="flex:1;"></div>
+          <div style="display:flex;align-items:center;gap:22px;font-size:14px;font-weight:500;color:#4a4c43;">
+            <span>Guías</span><span>Servicios</span>
+            <button style="border:none;background:#184e36;color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;padding:10px 16px;border-radius:9px;cursor:pointer;">Vendé tu terreno</button>
+          </div>
+        </div>
+
+        <div style="flex:1;display:flex;min-height:0;">
+
+          <!-- filter rail -->
+          <div style="flex:none;width:262px;background:#fff;border-right:1px solid #efece5;overflow-y:auto;padding:22px 20px;">
+            <div style="display:flex;flex-direction:column;gap:24px;">
+              <div>
+                <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Superficie</div>
+                <div style="display:flex;background:#eceae3;border-radius:8px;padding:3px;gap:3px;margin-bottom:9px;">
+                  <span style="flex:1;text-align:center;font-size:11.5px;font-weight:700;padding:5px;border-radius:6px;background:#fff;">m² (lotes)</span>
+                  <span style="flex:1;text-align:center;font-size:11.5px;font-weight:600;padding:5px;border-radius:6px;color:#6f7167;">ha (campos)</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:7px;">
+                  <div style="flex:1;padding:9px 10px;background:#fafaf9;border:1px solid #e7e3da;border-radius:8px;font-size:13px;color:#9a9b92;">mín.</div>
+                  <span style="color:#b3b4aa;">—</span>
+                  <div style="flex:1;padding:9px 10px;background:#fafaf9;border:1px solid #e7e3da;border-radius:8px;font-size:13px;color:#9a9b92;">máx.</div>
+                </div>
+              </div>
+              <div style="border-top:1px solid #efece5;padding-top:24px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div style="font-size:13px;font-weight:700;">Precio</div><span style="font-size:11px;font-weight:600;color:#9a9b92;">US$ · Gs.</span></div>
+                <div style="display:flex;align-items:center;gap:7px;">
+                  <div style="flex:1;padding:9px 10px;background:#fafaf9;border:1px solid #e7e3da;border-radius:8px;font-size:13px;color:#9a9b92;">US$ mín.</div>
+                  <span style="color:#b3b4aa;">—</span>
+                  <div style="flex:1;padding:9px 10px;background:#fafaf9;border:1px solid #e7e3da;border-radius:8px;font-size:13px;color:#9a9b92;">US$ máx.</div>
+                </div>
+              </div>
+              <div style="border-top:1px solid #efece5;padding-top:24px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:11px;">Servicios</div>
+                <div style="display:flex;flex-direction:column;gap:11px;">
+                  <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;"><span style="width:18px;height:18px;border-radius:5px;background:#1f6b4a;display:flex;align-items:center;justify-content:center;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>Agua / ESSAP</label>
+                  <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;"><span style="width:18px;height:18px;border-radius:5px;background:#1f6b4a;display:flex;align-items:center;justify-content:center;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>Energía / ANDE</label>
+                  <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#4a4c43;"><span style="width:18px;height:18px;border-radius:5px;border:1.5px solid #d4d0c6;"></span>Desagüe</label>
+                  <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#4a4c43;"><span style="width:18px;height:18px;border-radius:5px;border:1.5px solid #d4d0c6;"></span>Asfalto / empedrado</label>
+                  <label style="display:flex;align-items:center;gap:9px;font-size:13.5px;color:#4a4c43;"><span style="width:18px;height:18px;border-radius:5px;border:1.5px solid #d4d0c6;"></span>Internet</label>
+                </div>
+              </div>
+              <div style="border-top:1px solid #efece5;padding-top:24px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Financiación</div>
+                <div style="display:flex;gap:7px;">
+                  <span style="flex:1;text-align:center;font-size:12.5px;font-weight:600;padding:8px;border-radius:8px;border:1.5px solid #1f6b4a;background:#eef3ef;color:#1f6b4a;">Contado</span>
+                  <span style="flex:1;text-align:center;font-size:12.5px;font-weight:500;padding:8px;border-radius:8px;border:1px solid #e3e0d8;color:#4a4c43;">Cuotas</span>
+                </div>
+              </div>
+              <div style="border-top:1px solid #efece5;padding-top:24px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Estado de título</div>
+                <div style="display:flex;gap:7px;">
+                  <span style="flex:1;text-align:center;font-size:12.5px;font-weight:600;padding:8px;border-radius:8px;border:1.5px solid #1f6b4a;background:#eef3ef;color:#1f6b4a;">Con título</span>
+                  <span style="flex:1;text-align:center;font-size:12.5px;font-weight:500;padding:8px;border-radius:8px;border:1px solid #e3e0d8;color:#4a4c43;">En proceso</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- list pane -->
+          <div style="flex:none;width:560px;background:#fafaf9;border-right:1px solid #efece5;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px 10px;position:sticky;top:0;background:#fafaf9;">
+              <div style="font-size:15px;font-weight:600;"><b style="font-weight:700;">128</b> terrenos en Luque</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:13px;color:#6f7167;">Ordenar: <span style="font-weight:600;color:#16170f;">Relevancia</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;padding:8px 22px 24px;">
+              <sc-for list="{{ listings }}" as="item" hint-placeholder-count="4">
+                <div style="display:flex;background:#fff;border:1px solid #e9e6df;border-radius:14px;overflow:hidden;">
+                  <div style="position:relative;flex:none;width:200px;background:#ece6d9;">
+                    {{ item.map }}
+                    <span style="position:absolute;top:9px;left:9px;font-size:10.5px;font-weight:600;background:rgba(255,255,255,.93);color:#4a4c43;padding:3px 9px;border-radius:20px;">{{ item.type }}</span>
+                  </div>
+                  <div style="flex:1;padding:14px 16px;min-width:0;">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+                      <div style="font-size:18px;font-weight:700;letter-spacing:-0.015em;">{{ item.price }}</div>
+                      <div style="font-size:12.5px;font-weight:600;color:#1f6b4a;">{{ item.per }}</div>
+                    </div>
+                    <sc-if value="{{ showGs }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px;color:#9a9b92;margin-top:1px;">{{ item.priceGs }}</div></sc-if>
+                    <div style="font-size:14.5px;font-weight:600;margin-top:7px;">{{ item.title }}</div>
+                    <div style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:#6f7167;margin-top:2px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ item.loc }}
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:#4a4c43;margin-top:9px;font-weight:600;">
+                      <span>{{ item.area }}</span>
+                      <sc-if value="{{ item.tituloCon }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:3px;font-weight:600;color:#1f6b4a;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Con título</span></sc-if>
+                      <span style="color:#6f7167;font-weight:500;">{{ item.financ }}</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- map pane -->
+          <div style="flex:1;position:relative;background:#ece6d9;min-width:0;">
+            {{ detailMap }}
+            <span style="position:absolute;top:140px;left:120px;font-size:13px;font-weight:700;background:#16170f;color:#fff;padding:6px 12px;border-radius:22px;box-shadow:0 3px 10px rgba(0,0,0,.28);">US$ 28.500</span>
+            <span style="position:absolute;top:240px;left:240px;font-size:13px;font-weight:700;background:#fff;color:#16170f;padding:6px 12px;border-radius:22px;box-shadow:0 3px 10px rgba(0,0,0,.2);">US$ 65.000</span>
+            <span style="position:absolute;top:170px;left:330px;font-size:13px;font-weight:700;background:#fff;color:#16170f;padding:6px 12px;border-radius:22px;box-shadow:0 3px 10px rgba(0,0,0,.2);">US$ 190.000</span>
+            <span style="position:absolute;top:340px;left:160px;font-size:13px;font-weight:700;background:#fff;color:#16170f;padding:6px 12px;border-radius:22px;box-shadow:0 3px 10px rgba(0,0,0,.2);">US$ 12.900</span>
+            <div style="position:absolute;top:16px;right:16px;display:flex;flex-direction:column;background:#fff;border-radius:9px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.18);">
+              <span style="padding:9px 12px;font-size:18px;font-weight:600;color:#16170f;border-bottom:1px solid #efece5;cursor:pointer;">+</span>
+              <span style="padding:9px 12px;font-size:18px;font-weight:600;color:#16170f;cursor:pointer;">−</span>
+            </div>
+            <label style="position:absolute;bottom:16px;left:16px;display:flex;align-items:center;gap:8px;background:#fff;padding:9px 14px;border-radius:22px;box-shadow:0 2px 8px rgba(0,0,0,.18);font-size:13px;font-weight:600;">
+              <span style="width:34px;height:18px;border-radius:20px;background:#1f6b4a;position:relative;"><span style="position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff;"></span></span>
+              Buscar al mover el mapa
+            </label>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-bottom:44px;">
+    <div style="font-size:12px;font-weight:700;color:#6f7167;margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">03 · Detalle del terreno</div>
+    <div style="display:flex;gap:40px;align-items:flex-start;">
+
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Móvil — mapa primero, fotos secundarias</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;position:relative;">
+
+          <!-- App bar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-bottom:1px solid #efece5;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <div style="display:flex;gap:18px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </div>
+          </div>
+
+          <!-- PRIMARY: large map -->
+          <div style="position:relative;height:260px;background:#ece6d9;">
+            {{ detailMap }}
+            <span style="position:absolute;top:13px;left:13px;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.93);color:#4a4c43;padding:5px 11px;border-radius:20px;">Lote urbano</span>
+            <span style="position:absolute;top:13px;right:13px;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.93);color:#1f6b4a;padding:5px 10px;border-radius:20px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Con título</span>
+            <!-- dimension labels -->
+            <span style="position:absolute;top:96px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;background:#16170f;color:#fff;padding:3px 8px;border-radius:6px;">12 m de frente</span>
+            <span style="position:absolute;top:150px;left:236px;font-size:11px;font-weight:700;background:#16170f;color:#fff;padding:3px 8px;border-radius:6px;">30 m</span>
+            <button style="position:absolute;bottom:13px;right:13px;border:none;background:#fff;color:#16170f;font-family:inherit;font-size:12px;font-weight:600;padding:8px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;">Ampliar mapa</button>
+          </div>
+
+          <!-- Title + price block -->
+          <div style="padding:18px 16px 4px;">
+            <h1 style="font-size:22px;font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin:0;">Lote en San Isidro</h1>
+            <div style="display:flex;align-items:center;gap:5px;font-size:14px;color:#6f7167;margin-top:4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              Luque · San Isidro · Central
+            </div>
+            <div style="display:flex;align-items:baseline;gap:10px;margin-top:14px;">
+              <div style="font-size:28px;font-weight:700;letter-spacing:-0.02em;">US$ 28.500</div>
+              <div style="font-size:14px;font-weight:600;color:#1f6b4a;">US$ 79/m²</div>
+            </div>
+            <div style="font-size:13px;color:#9a9b92;margin-top:2px;">≈ Gs. 208.050.000</div>
+          </div>
+
+          <!-- Key facts -->
+          <div style="margin:16px 16px 0;border:1px solid #e9e6df;border-radius:14px;overflow:hidden;background:#fff;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;">
+              <div style="padding:14px 16px;border-right:1px solid #efece5;border-bottom:1px solid #efece5;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Superficie</div><div style="font-size:16px;font-weight:700;margin-top:2px;">360 m²</div></div>
+              <div style="padding:14px 16px;border-bottom:1px solid #efece5;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Precio / m²</div><div style="font-size:16px;font-weight:700;margin-top:2px;">US$ 79</div></div>
+              <div style="padding:14px 16px;border-right:1px solid #efece5;border-bottom:1px solid #efece5;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Frente</div><div style="font-size:16px;font-weight:700;margin-top:2px;">12 m</div></div>
+              <div style="padding:14px 16px;border-bottom:1px solid #efece5;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Dimensiones</div><div style="font-size:16px;font-weight:700;margin-top:2px;">12 × 30 m</div></div>
+              <div style="padding:14px 16px;border-right:1px solid #efece5;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Esquina</div><div style="font-size:16px;font-weight:700;margin-top:2px;">No</div></div>
+              <div style="padding:14px 16px;"><div style="font-size:11px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;">Financiación</div><div style="font-size:16px;font-weight:700;margin-top:2px;">Cuotas</div></div>
+            </div>
+          </div>
+
+          <!-- Trust badges -->
+          <div style="display:flex;gap:9px;padding:16px 16px 0;">
+            <div style="flex:1;display:flex;align-items:center;gap:9px;background:#eef3ef;border:1px solid #dbe7df;border-radius:12px;padding:12px;">
+              <div style="flex:none;width:30px;height:30px;border-radius:8px;background:#1f6b4a;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg></div>
+              <div><div style="font-size:13px;font-weight:700;color:#1f6b4a;">Con título</div><div style="font-size:11px;color:#6f7167;">Verificado</div></div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;gap:9px;background:#f3f1ea;border:1px solid #e6e2d8;border-radius:12px;padding:12px;">
+              <div style="flex:none;width:30px;height:30px;border-radius:8px;background:#a9772a;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+              <div><div style="font-size:13px;font-weight:700;color:#8a5f1f;">Cuotas</div><div style="font-size:11px;color:#6f7167;">Hasta 60 meses</div></div>
+            </div>
+          </div>
+
+          <!-- Servicios -->
+          <div style="padding:20px 16px 0;">
+            <div style="font-size:15px;font-weight:700;margin-bottom:11px;">Servicios disponibles</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#16170f;background:#fff;border:1px solid #e9e6df;padding:8px 13px;border-radius:9px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Agua ESSAP</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#16170f;background:#fff;border:1px solid #e9e6df;padding:8px 13px;border-radius:9px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Energía ANDE</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#16170f;background:#fff;border:1px solid #e9e6df;padding:8px 13px;border-radius:9px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Asfalto</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#16170f;background:#fff;border:1px solid #e9e6df;padding:8px 13px;border-radius:9px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Internet</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#9a9b92;background:#faf9f6;border:1px solid #efece5;padding:8px 13px;border-radius:9px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c4c2b8" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>Desagüe</span>
+            </div>
+          </div>
+
+          <!-- SECONDARY: photos -->
+          <div style="padding:20px 16px 0;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
+              <div style="font-size:15px;font-weight:700;">Fotos del lote</div>
+              <span style="font-size:12px;color:#9a9b92;">4 fotos · referenciales</span>
+            </div>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+              <div style="flex:none;width:108px;height:80px;border-radius:10px;background:#eceae3;border:1px solid #e3e0d8;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div style="flex:none;width:108px;height:80px;border-radius:10px;background:#eceae3;border:1px solid #e3e0d8;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div style="flex:none;width:108px;height:80px;border-radius:10px;background:#eceae3;border:1px solid #e3e0d8;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div style="flex:none;width:108px;height:80px;border-radius:10px;background:#eceae3;border:1px solid #e3e0d8;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b3b4aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Services cross-sell -->
+          <div style="margin:20px 16px 0;background:#f1f4ef;border:1px solid #e2e9e1;border-radius:14px;padding:18px;">
+            <div style="font-size:15px;font-weight:700;line-height:1.25;margin-bottom:6px;">¿Necesitás un tasador o revisión legal?</div>
+            <p style="font-size:13px;color:#6f7167;line-height:1.5;margin:0 0 14px;">Verificamos límites, frente y estado de título antes de que firmes. Pedilo y coordinamos un profesional local.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e2e9e1;border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;">Revisión de título <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              <span style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e2e9e1;border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;">Agrimensura / límites <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </div>
+
+          <div style="height:84px;"></div>
+
+          <!-- Sticky contact bar -->
+          <div style="position:sticky;bottom:0;display:flex;gap:9px;padding:12px 14px;background:#fff;border-top:1px solid #ece9e2;">
+            <button style="flex:none;width:52px;border:1px solid #e3e0d8;background:#fff;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+            <button style="flex:1;border:none;background:#25D366;color:#fff;font-family:inherit;font-size:15px;font-weight:700;padding:14px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;">
+              <svg width="20" height="20" viewBox="0 0 32 32" fill="#fff"><path d="M16 .5C7.5.5.6 7.4.6 15.9c0 2.8.7 5.4 2 7.8L.5 31.5l8-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.5 16 .5zm0 28.1c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.8 1.3 1.3-4.6-.3-.5c-1.3-2.1-2-4.5-2-7 0-7.1 5.8-12.9 12.9-12.9S28.9 8.9 28.9 16 23.1 28.6 16 28.6zm7.1-9.4c-.4-.2-2.3-1.1-2.6-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.2-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7s-.9-2.1-1.2-2.9c-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-1 .5-.3.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.1-.3-.2-.7-.4z"/></svg>
+              Contactar por WhatsApp
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-bottom:44px;">
+    <div style="font-size:12px;font-weight:700;color:#6f7167;margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">04 · Vendé tu terreno — landing de tasación</div>
+    <div style="display:flex;gap:40px;align-items:flex-start;">
+
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Móvil — página de conversión (vendedores)</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 16px;background:#184e36;">
+            <div style="font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#fff;">terreno<span style="color:#7ab394;font-weight:500;">.com.py</span></div>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#cfe3d8" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </div>
+
+          <!-- Hero -->
+          <div style="position:relative;background:#184e36;padding:26px 20px 30px;color:#eaf2ec;overflow:hidden;">
+            <div style="position:absolute;inset:0;opacity:0.45;">
+              <svg viewBox="0 0 360 300" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><g stroke="#2f6a4d" stroke-width="1" fill="none"><line x1="70" y1="0" x2="70" y2="300"/><line x1="160" y1="0" x2="160" y2="300"/><line x1="260" y1="0" x2="260" y2="300"/><line x1="0" y1="70" x2="360" y2="70"/><line x1="0" y1="160" x2="360" y2="160"/><line x1="0" y1="240" x2="360" y2="240"/></g><polygon points="160,70 260,70 260,160 160,160" fill="#2f7a55" fill-opacity="0.5"/><g transform="translate(208 115)"><path d="M0 -16 C 9 -16 13 -6 0 8 C -13 -6 -9 -16 0 -16 Z" fill="#9fd3b6"/></g></svg>
+            </div>
+            <div style="position:relative;">
+              <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#9fd3b6;margin-bottom:12px;letter-spacing:0.02em;">
+                <span style="width:7px;height:7px;border-radius:50%;background:#9fd3b6;"></span>VENDÉ TU TERRENO
+              </div>
+              <h1 style="font-size:27px;font-weight:700;letter-spacing:-0.025em;line-height:1.12;margin:0 0 10px;color:#fff;text-wrap:balance;">Lo valuamos, lo publicamos y lo vendemos por vos.</h1>
+              <p style="font-size:14.5px;line-height:1.5;color:#bcd6c5;margin:0;">Tasación gratis con datos reales de tu zona. Vos sólo pagás comisión cuando se vende.</p>
+            </div>
+          </div>
+
+          <!-- Lead form -->
+          <div style="margin:-18px 16px 0;position:relative;background:#fff;border:1px solid #e7e3da;border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(22,23,15,.1);">
+            <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Pedí tu tasación gratis</div>
+            <div style="font-size:12.5px;color:#6f7167;margin-bottom:15px;">Respuesta en menos de 48&nbsp;h.</div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+              <div style="display:flex;gap:9px;">
+                <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;font-size:14px;color:#9a9b92;">Depto <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;font-size:14px;color:#9a9b92;">Ciudad <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9a9b92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+              </div>
+              <div style="display:flex;gap:9px;">
+                <div style="flex:1;padding:11px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;font-size:14px;color:#9a9b92;">Superficie</div>
+                <div style="flex:none;display:flex;background:#eceae3;border-radius:10px;padding:3px;gap:3px;align-self:stretch;align-items:center;">
+                  <span style="font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:7px;background:#fff;">m²</span>
+                  <span style="font-size:12.5px;font-weight:600;padding:7px 11px;border-radius:7px;color:#6f7167;">ha</span>
+                </div>
+              </div>
+              <div style="padding:11px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;font-size:14px;color:#9a9b92;">Tu nombre</div>
+              <div style="padding:11px 12px;background:#fafaf9;border:1px solid #e7e3da;border-radius:10px;font-size:14px;color:#9a9b92;">WhatsApp / teléfono</div>
+            </div>
+            <button style="width:100%;border:none;background:#1f6b4a;color:#fff;font-family:inherit;font-size:15px;font-weight:700;padding:14px;border-radius:11px;cursor:pointer;margin-top:13px;">Quiero mi tasación gratis</button>
+            <div style="display:flex;align-items:center;gap:10px;margin:12px 0;"><div style="flex:1;height:1px;background:#efece5;"></div><span style="font-size:11.5px;color:#b3b4aa;">o</span><div style="flex:1;height:1px;background:#efece5;"></div></div>
+            <button style="width:100%;border:none;background:#25D366;color:#fff;font-family:inherit;font-size:14px;font-weight:700;padding:13px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="#fff"><path d="M16 .5C7.5.5.6 7.4.6 15.9c0 2.8.7 5.4 2 7.8L.5 31.5l8-2.1c2.3 1.2 4.8 1.9 7.5 1.9 8.5 0 15.4-6.9 15.4-15.4S24.5.5 16 .5zm0 28.1c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.8 1.3 1.3-4.6-.3-.5c-1.3-2.1-2-4.5-2-7 0-7.1 5.8-12.9 12.9-12.9S28.9 8.9 28.9 16 23.1 28.6 16 28.6zm7.1-9.4c-.4-.2-2.3-1.1-2.6-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.3-2.2-2.7-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7s-.9-2.1-1.2-2.9c-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-1 .5-.3.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.6.2-1.8-.1-.1-.3-.2-.7-.4z"/></svg>
+              Escribinos por WhatsApp
+            </button>
+          </div>
+
+          <!-- Trust signals -->
+          <div style="display:flex;gap:9px;padding:22px 16px 0;">
+            <div style="flex:1;text-align:center;background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px 8px;"><div style="font-size:19px;font-weight:700;color:#1f6b4a;">0%</div><div style="font-size:11.5px;color:#6f7167;line-height:1.3;margin-top:2px;">hasta que se venda</div></div>
+            <div style="flex:1;text-align:center;background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px 8px;"><div style="font-size:19px;font-weight:700;color:#1f6b4a;">48 h</div><div style="font-size:11.5px;color:#6f7167;line-height:1.3;margin-top:2px;">tasación inicial</div></div>
+            <div style="flex:1;text-align:center;background:#fff;border:1px solid #e9e6df;border-radius:12px;padding:14px 8px;"><div style="font-size:19px;font-weight:700;color:#1f6b4a;">17</div><div style="font-size:11.5px;color:#6f7167;line-height:1.3;margin-top:2px;">departamentos</div></div>
+          </div>
+
+          <!-- How it works -->
+          <div style="padding:30px 16px 0;">
+            <div style="font-size:18px;font-weight:700;letter-spacing:-0.015em;margin-bottom:16px;">Cómo funciona</div>
+            <div style="display:flex;flex-direction:column;gap:0;">
+              <div style="display:flex;gap:14px;">
+                <div style="display:flex;flex-direction:column;align-items:center;"><div style="flex:none;width:32px;height:32px;border-radius:50%;background:#1f6b4a;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div><div style="flex:1;width:2px;background:#e2e9e1;"></div></div>
+                <div style="padding-bottom:20px;"><div style="font-size:15px;font-weight:700;">Valuamos tu terreno</div><div style="font-size:13px;color:#6f7167;line-height:1.5;margin-top:3px;">Cruzamos superficie, ubicación y ventas recientes de la zona. Sin costo.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;">
+                <div style="display:flex;flex-direction:column;align-items:center;"><div style="flex:none;width:32px;height:32px;border-radius:50%;background:#1f6b4a;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div><div style="flex:1;width:2px;background:#e2e9e1;"></div></div>
+                <div style="padding-bottom:20px;"><div style="font-size:15px;font-weight:700;">Lo publicamos bien</div><div style="font-size:13px;color:#6f7167;line-height:1.5;margin-top:3px;">Mapa, medidas y título verificado. Aparece ante compradores reales.</div></div>
+              </div>
+              <div style="display:flex;gap:14px;">
+                <div style="display:flex;flex-direction:column;align-items:center;"><div style="flex:none;width:32px;height:32px;border-radius:50%;background:#1f6b4a;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;">3</div></div>
+                <div><div style="font-size:15px;font-weight:700;">Vendemos por vos</div><div style="font-size:13px;color:#6f7167;line-height:1.5;margin-top:3px;">Filtramos consultas, coordinamos visitas y te acompañamos hasta la escritura.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial -->
+          <div style="margin:30px 16px 0;background:#f1f4ef;border:1px solid #e2e9e1;border-radius:14px;padding:20px;">
+            <p style="font-size:15px;line-height:1.5;font-weight:500;color:#16170f;margin:0 0 12px;">"Tenía un campo en Concepción parado hace dos años. Lo tasaron, lo publicaron con el mapa y se vendió en cuatro meses."</p>
+            <div style="display:flex;align-items:center;gap:10px;"><div style="width:34px;height:34px;border-radius:50%;background:#d3ddc6;"></div><div><div style="font-size:13px;font-weight:700;">Rodrigo A.</div><div style="font-size:12px;color:#6f7167;">Vendió 45 ha · Concepción</div></div></div>
+          </div>
+
+          <!-- Final CTA -->
+          <div style="margin:24px 16px 24px;background:#184e36;border-radius:14px;padding:22px;text-align:center;">
+            <div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.015em;margin-bottom:6px;">¿Listo para vender?</div>
+            <p style="font-size:13px;color:#bcd6c5;margin:0 0 14px;line-height:1.5;">Empezá con una tasación gratis hoy.</p>
+            <button style="border:none;background:#fff;color:#184e36;font-family:inherit;font-size:14px;font-weight:700;padding:13px 22px;border-radius:11px;cursor:pointer;">Calcular el valor de mi terreno</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-bottom:44px;">
+    <div style="font-size:12px;font-weight:700;color:#6f7167;margin-bottom:14px;letter-spacing:0.06em;text-transform:uppercase;">05 · Guía de inversión — plantilla de artículo</div>
+    <div style="display:flex;gap:40px;align-items:flex-start;">
+
+      <div style="flex:none;width:360px;">
+        <div style="font-size:12px;font-weight:600;color:#6f7167;margin-bottom:10px;">Móvil — artículo largo, tipografía calma</div>
+        <div style="width:360px;background:#fafaf9;border:1px solid #e3e0d8;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-bottom:1px solid #efece5;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <div style="font-size:13px;font-weight:600;color:#6f7167;">Guías</div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16170f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+          </div>
+
+          <!-- Article header -->
+          <div style="padding:24px 20px 0;">
+            <div style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#1f6b4a;background:#eef3ef;padding:5px 11px;border-radius:20px;">Guía · Títulos</div>
+            <h1 style="font-size:27px;font-weight:700;letter-spacing:-0.025em;line-height:1.14;margin:14px 0 0;text-wrap:balance;">Cómo verificar el título de un terreno en Paraguay</h1>
+            <div style="display:flex;align-items:center;gap:12px;font-size:12.5px;color:#9a9b92;margin-top:14px;">
+              <span>Actualizado · jun 2026</span><span style="width:3px;height:3px;border-radius:50%;background:#c4c2b8;"></span><span>6 min de lectura</span>
+            </div>
+          </div>
+
+          <!-- Calm hero -->
+          <div style="position:relative;height:150px;margin:20px 20px 0;border-radius:14px;overflow:hidden;background:#ece6d9;">
+            {{ detailMap }}
+          </div>
+
+          <!-- Prose -->
+          <div style="padding:24px 20px 0;">
+            <p style="font-size:15.5px;line-height:1.62;color:#33352c;margin:0 0 18px;">Antes de señar un terreno conviene confirmar que quien vende es realmente el propietario y que el inmueble no tiene deudas ni litigios. En Paraguay esto se hace con tres documentos básicos y una visita a la zona.</p>
+            <h2 style="font-size:19px;font-weight:700;letter-spacing:-0.015em;margin:26px 0 12px;">Los tres documentos clave</h2>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:18px;">
+              <div style="display:flex;gap:12px;"><div style="flex:none;width:24px;height:24px;border-radius:7px;background:#eef3ef;color:#1f6b4a;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div><div style="font-size:15px;line-height:1.55;color:#33352c;"><b style="color:#16170f;">Certificado de Condiciones de Dominio</b> — emitido por la Dirección de Registros Públicos; muestra el titular actual y si hay hipotecas o embargos.</div></div>
+              <div style="display:flex;gap:12px;"><div style="flex:none;width:24px;height:24px;border-radius:7px;background:#eef3ef;color:#1f6b4a;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div><div style="font-size:15px;line-height:1.55;color:#33352c;"><b style="color:#16170f;">Cédula del inmueble</b> — la identificación catastral del Servicio Nacional de Catastro, con la superficie oficial.</div></div>
+              <div style="display:flex;gap:12px;"><div style="flex:none;width:24px;height:24px;border-radius:7px;background:#eef3ef;color:#1f6b4a;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;">3</div><div style="font-size:15px;line-height:1.55;color:#33352c;"><b style="color:#16170f;">Última transferencia</b> — la escritura por la cual el vendedor adquirió el lote, pasada por escribanía.</div></div>
+            </div>
+
+            <!-- Callout -->
+            <div style="background:#f1f4ef;border-left:3px solid #1f6b4a;border-radius:0 12px 12px 0;padding:16px 18px;margin:22px 0;">
+              <div style="font-size:13px;font-weight:700;color:#1f6b4a;margin-bottom:5px;">Señal de alerta</div>
+              <p style="font-size:14.5px;line-height:1.55;color:#33352c;margin:0;">Si el vendedor sólo ofrece un "contrato privado" sin escritura ni datos de registro, frená la operación hasta verificar el dominio.</p>
+            </div>
+
+            <h2 style="font-size:19px;font-weight:700;letter-spacing:-0.015em;margin:26px 0 12px;">Confirmá los límites en el terreno</h2>
+            <p style="font-size:15.5px;line-height:1.62;color:#33352c;margin:0 0 18px;">La superficie del título no siempre coincide con lo que se ve. Un agrimensor mide frente, fondo y mojones, y confirma que el polígono real corresponde a la cédula catastral antes de firmar.</p>
+          </div>
+
+          <!-- Related services sidebar -->
+          <div style="margin:8px 20px 0;background:#fff;border:1px solid #e9e6df;border-radius:14px;padding:18px;">
+            <div style="font-size:13px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#9a9b92;margin-bottom:13px;">Servicios relacionados</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <span style="display:flex;align-items:center;justify-content:space-between;font-size:14.5px;font-weight:600;">Revisión de título <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              <div style="height:1px;background:#efece5;"></div>
+              <span style="display:flex;align-items:center;justify-content:space-between;font-size:14.5px;font-weight:600;">Agrimensura de límites <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+              <div style="height:1px;background:#efece5;"></div>
+              <span style="display:flex;align-items:center;justify-content:space-between;font-size:14.5px;font-weight:600;">Tasación de mercado <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f6b4a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </div>
+
+          <!-- Soft CTA -->
+          <div style="margin:20px 20px 26px;display:flex;flex-direction:column;gap:10px;">
+            <div style="background:#f1f4ef;border:1px solid #e2e9e1;border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div><div style="font-size:15px;font-weight:700;">¿Buscás terreno?</div><div style="font-size:13px;color:#6f7167;margin-top:2px;">Explorá lotes con título verificado.</div></div>
+              <button style="flex:none;border:none;background:#1f6b4a;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:11px 15px;border-radius:10px;cursor:pointer;">Buscar</button>
+            </div>
+            <div style="background:#184e36;border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div><div style="font-size:15px;font-weight:700;color:#fff;">¿Tenés un terreno?</div><div style="font-size:13px;color:#bcd6c5;margin-top:2px;">Tasación gratis en 48&nbsp;h.</div></div>
+              <button style="flex:none;border:none;background:#fff;color:#184e36;font-family:inherit;font-size:13px;font-weight:700;padding:11px 15px;border-radius:10px;cursor:pointer;">Vender</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!--FRAMES-->
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showGs&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;mapTint&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Tierra&quot;,&quot;options&quot;:[&quot;Tierra&quot;,&quot;Bosque&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { heroTab: 'comprar' };
+
+  rng(seed){ let s=(seed||1)%2147483647; if(s<=0)s+=2147483646; return ()=>{ s=s*16807%2147483647; return (s-1)/2147483646; }; }
+
+  makeMapSVG(seed, W, H, withPin){
+    const r=this.rng(seed);
+    const sand = (this.props.mapTint==='Bosque') ? '#e4ebdd' : '#ece6d9';
+    const accent='#1f6b4a';
+    const fields=['#dce5d1','#d3ddc6','#e3e9da'];
+    let p='';
+    for(let i=0;i<3;i++){
+      const x=r()*W, y=r()*H, s=W*(0.45+r()*0.5);
+      p+='<rect x="'+(x-s/2).toFixed(0)+'" y="'+(y-s/2).toFixed(0)+'" width="'+s.toFixed(0)+'" height="'+s.toFixed(0)+'" rx="'+(s*0.18).toFixed(0)+'" fill="'+fields[i]+'" opacity="0.9" transform="rotate('+(r()*40-20).toFixed(1)+' '+x.toFixed(0)+' '+y.toFixed(0)+')"/>';
+    }
+    if(r()>0.5){
+      const y=H*(0.3+r()*0.4);
+      p+='<path d="M0 '+y.toFixed(0)+' C '+(W*0.3).toFixed(0)+' '+(y-H*0.15).toFixed(0)+', '+(W*0.6).toFixed(0)+' '+(y+H*0.2).toFixed(0)+', '+W+' '+(y-H*0.05).toFixed(0)+'" stroke="#cfe0e6" stroke-width="'+(H*0.06).toFixed(0)+'" fill="none" stroke-linecap="round"/>';
+    }
+    let grid=''; const gx=W/6, gy=H/6;
+    for(let i=1;i<6;i++){ grid+='<line x1="'+(i*gx).toFixed(0)+'" y1="0" x2="'+(i*gx).toFixed(0)+'" y2="'+H+'"/><line x1="0" y1="'+(i*gy).toFixed(0)+'" x2="'+W+'" y2="'+(i*gy).toFixed(0)+'"/>'; }
+    p+='<g stroke="#d6cfbe" stroke-width="1" opacity="0.55">'+grid+'</g>';
+    const ry=H*(0.5+(r()*0.3-0.15));
+    p+='<path d="M0 '+ry.toFixed(0)+' L '+W+' '+(ry+(r()*40-20)).toFixed(0)+'" stroke="#ffffff" stroke-width="'+(H*0.05).toFixed(0)+'" fill="none"/>';
+    const rx=W*(0.4+r()*0.3);
+    p+='<path d="M'+rx.toFixed(0)+' 0 L '+(rx+(r()*30-15)).toFixed(0)+' '+H+'" stroke="#ffffff" stroke-width="'+(H*0.038).toFixed(0)+'" fill="none"/>';
+    const cx=W*(0.42+r()*0.16), cy=H*(0.42+r()*0.16), pw=W*0.24, ph=H*0.22, sk=r()*8-4;
+    p+='<polygon points="'+(cx-pw/2).toFixed(0)+','+(cy-ph/2+sk).toFixed(0)+' '+(cx+pw/2).toFixed(0)+','+(cy-ph/2-sk).toFixed(0)+' '+(cx+pw/2).toFixed(0)+','+(cy+ph/2+sk).toFixed(0)+' '+(cx-pw/2).toFixed(0)+','+(cy+ph/2-sk).toFixed(0)+'" fill="'+accent+'" fill-opacity="0.16" stroke="'+accent+'" stroke-width="2"/>';
+    if(withPin){
+      p+='<g transform="translate('+cx.toFixed(0)+' '+cy.toFixed(0)+')"><path d="M0 -16 C 9 -16 13 -6 0 8 C -13 -6 -9 -16 0 -16 Z" fill="'+accent+'"/><circle cx="0" cy="-8" r="3.6" fill="#fff"/></g>';
+    }
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><rect width="'+W+'" height="'+H+'" fill="'+sand+'"/>'+p+'</svg>';
+  }
+
+  mapEl(seed, withPin){
+    return React.createElement('div', { style:{position:'absolute',inset:0}, dangerouslySetInnerHTML:{ __html:this.makeMapSVG(seed,200,200,!!withPin) } });
+  }
+
+  renderVals(){
+    const showGs = this.props.showGs ?? true;
+    const mk=(o)=>Object.assign({ tituloCon:o.titulo==='con', tituloProceso:o.titulo!=='con', map:this.mapEl(o.seed) }, o);
+    const L=[
+      mk({ seed:7,  type:'Lote urbano', title:'Lote en San Isidro', loc:'Luque · San Isidro · Central', area:'360 m²', price:'US$ 28.500', priceGs:'≈ Gs. 208 mill.', per:'US$ 79/m²', servicios:['Agua ESSAP','ANDE','Asfalto','Internet'], titulo:'con', financ:'Cuotas', esquina:false }),
+      mk({ seed:22, type:'Campo', title:'Campo ganadero en Horqueta', loc:'Horqueta · Concepción', area:'45 ha', price:'US$ 135.000', priceGs:'≈ Gs. 985 mill.', per:'US$ 3.000/ha', servicios:['Agua','ANDE','Camino empedrado'], titulo:'con', financ:'Contado', esquina:false }),
+      mk({ seed:41, type:'Quinta', title:'Quinta en Areguá', loc:'Areguá · Central', area:'5.000 m²', price:'US$ 65.000', priceGs:'≈ Gs. 474 mill.', per:'US$ 13/m²', servicios:['Agua','ANDE','Internet'], titulo:'con', financ:'Contado', esquina:false }),
+      mk({ seed:63, type:'Terreno comercial', title:'Esquina comercial Km 7', loc:'Ciudad del Este · Alto Paraná', area:'800 m²', price:'US$ 190.000', priceGs:'≈ Gs. 1.387 mill.', per:'US$ 237/m²', servicios:['Agua ESSAP','ANDE','Desagüe','Asfalto','Internet'], titulo:'con', financ:'Cuotas', esquina:true }),
+      mk({ seed:88, type:'Loteamiento', title:'Loteamiento Cambyretá', loc:'Encarnación · Itapúa', area:'desde 300 m²', price:'desde US$ 12.900', priceGs:'≈ Gs. 94 mill.', per:'US$ 43/m²', servicios:['Agua','ANDE','Asfalto'], titulo:'proceso', financ:'Cuotas', esquina:false })
+    ];
+    return {
+      listings: L,
+      featured: [L[0], L[3], L[2]],
+      showGs,
+      detailMap: this.mapEl(7, true),
+      heroComprar: this.state.heroTab==='comprar',
+      heroVender: this.state.heroTab==='vender',
+      heroComprarBg: this.state.heroTab==='comprar' ? '#fff' : 'transparent',
+      heroComprarFg: this.state.heroTab==='comprar' ? '#16170f' : '#6f7167',
+      heroVenderBg: this.state.heroTab==='vender' ? '#fff' : 'transparent',
+      heroVenderFg: this.state.heroTab==='vender' ? '#16170f' : '#6f7167',
+      showComprar: ()=>this.setState({heroTab:'comprar'}),
+      showVender: ()=>this.setState({heroTab:'vender'})
+    };
+  }
+}
+</script>
+</body>
+</html>

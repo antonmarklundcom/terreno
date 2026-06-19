@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-sans text-ink;
+    text-wrap: balance;
+  }
+
+  /* Tabular figures for all prices and data, per the type spec. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  ::selection {
+    @apply bg-brand-tint text-brand-dark;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand/40 ring-offset-1 ring-offset-canvas;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-6 lg:px-8;
+  }
+
+  /* --- Buttons (44px min hit target on mobile) --- */
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[10px] px-5 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-brand-dark;
+  }
+  .btn-dark {
+    @apply btn bg-brand-dark text-white hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply btn border border-line-cool bg-surface text-ink hover:border-brand/40 hover:text-brand;
+  }
+  .btn-whatsapp {
+    @apply btn bg-whatsapp text-white hover:brightness-95;
+  }
+  .btn-light {
+    @apply btn bg-white text-brand-dark hover:bg-canvas;
+  }
+
+  /* --- Surfaces --- */
+  .card {
+    @apply rounded-card border border-line bg-surface;
+  }
+  .card-raised {
+    @apply rounded-card border border-line-warm bg-surface shadow-raised;
+  }
+
+  /* --- Chips / pills --- */
+  .chip {
+    @apply inline-flex cursor-pointer select-none items-center gap-1.5 rounded-pill border border-line-cool bg-surface px-3 py-[7px] text-[12.5px] font-medium text-ink-soft transition-colors;
+  }
+  .chip-active {
+    @apply border-brand bg-brand text-white;
+  }
+
+  /* --- Form controls --- */
+  .field {
+    @apply w-full rounded-[10px] border border-line-warm bg-fill px-3.5 py-3 text-[15px] text-ink placeholder:text-ink-faint focus:border-brand focus:bg-surface focus:shadow-focus;
+  }
+  .select-shell {
+    @apply flex w-full items-center justify-between gap-2 rounded-[10px] border border-line-warm bg-fill px-3.5 py-3 text-left;
+  }
+  .eyebrow {
+    @apply text-[10px] font-bold uppercase tracking-eyebrow text-ink-faint;
+  }
+  .section-h {
+    @apply text-[17px] font-bold tracking-h2 text-ink;
+  }
+}
+
+/* MapLibre attribution kept minimal to match the calm UI. */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: #6f7167;
+}
