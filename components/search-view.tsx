@@ -64,10 +64,10 @@ export function SearchView({
     <>
       {/* ===== Desktop: 3-column split ===== */}
       <div className="hidden lg:flex lg:h-[calc(100vh-60px)]">
-        <aside className="w-[262px] flex-none overflow-y-auto border-r border-line-soft bg-surface p-5">
+        <aside className="w-[300px] flex-none overflow-y-auto border-r border-line-soft bg-surface p-5 xl:w-[320px]">
           <SearchFilters facets={facets} />
         </aside>
-        <section className="w-[560px] flex-none overflow-y-auto bg-canvas">
+        <section className="w-[440px] flex-none overflow-y-auto border-r border-line-soft bg-canvas xl:w-[500px]">
           <div className="sticky top-0 z-10 bg-canvas px-5 py-3.5">{resultsHeader}</div>
           <div className="flex flex-col gap-3.5 px-5 pb-8">
             {listings.map((l) => (
