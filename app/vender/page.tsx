@@ -38,48 +38,51 @@ export default async function VenderPage() {
 
   return (
     <div>
-      {/* Hero */}
+      {/* Hero — intro + trust on the left, form card on the right at lg+. */}
       <section id="top" className="relative overflow-hidden bg-brand-dark text-white">
         <ParcelMotif opacity={0.4} />
-        <div className="container-page relative max-w-2xl py-10">
-          <div className="mb-3 flex items-center gap-2 text-[12.5px] font-bold tracking-wide text-[#9fd3b6]">
-            <span className="h-[7px] w-[7px] rounded-full bg-[#9fd3b6]" />
-            VENDÉ TU TERRENO
+        <div className="container-page relative py-10 lg:py-16">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+            <div>
+              <div className="mb-3 flex items-center gap-2 text-[12.5px] font-bold tracking-wide text-[#9fd3b6]">
+                <span className="h-[7px] w-[7px] rounded-full bg-[#9fd3b6]" />
+                VENDÉ TU TERRENO
+              </div>
+              <h1 className="text-[27px] font-bold leading-[1.12] tracking-h1 sm:text-[34px] lg:text-[40px]">
+                Lo valuamos, lo publicamos y lo vendemos por vos.
+              </h1>
+              <p className="mt-2.5 max-w-md text-[14.5px] leading-relaxed text-[#bcd6c5] sm:text-[15.5px]">
+                Tasación gratis con datos reales de tu zona. Vos sólo pagás comisión
+                cuando se vende.
+              </p>
+              {/* Trust stats — alongside the intro on the dark band. */}
+              <div className="mt-7 grid grid-cols-3 gap-2.5 lg:max-w-md">
+                {STATS.map((s) => (
+                  <div
+                    key={s.l}
+                    className="rounded-card border border-white/15 bg-white/5 p-3.5 text-center"
+                  >
+                    <div className="tnum text-[19px] font-bold text-white">{s.n}</div>
+                    <div className="mt-0.5 text-[11.5px] leading-tight text-[#bcd6c5]">
+                      {s.l}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lead form card */}
+            <div className="lg:justify-self-end lg:w-full lg:max-w-md">
+              <ValuationForm facets={facets} />
+            </div>
           </div>
-          <h1 className="text-[27px] font-bold leading-[1.12] tracking-h1 sm:text-[34px]">
-            Lo valuamos, lo publicamos y lo vendemos por vos.
-          </h1>
-          <p className="mt-2.5 max-w-md text-[14.5px] leading-relaxed text-[#bcd6c5]">
-            Tasación gratis con datos reales de tu zona. Vos sólo pagás comisión
-            cuando se vende.
-          </p>
         </div>
       </section>
 
-      <div className="container-page max-w-2xl">
-        {/* Lead form overlapping hero */}
-        <div className="-mt-5">
-          <ValuationForm facets={facets} />
-        </div>
-
-        {/* Trust signals */}
-        <div className="mt-6 grid grid-cols-3 gap-2.5">
-          {STATS.map((s) => (
-            <div
-              key={s.l}
-              className="rounded-card border border-line bg-surface p-3.5 text-center"
-            >
-              <div className="tnum text-[19px] font-bold text-brand">{s.n}</div>
-              <div className="mt-0.5 text-[11.5px] leading-tight text-ink-muted">
-                {s.l}
-              </div>
-            </div>
-          ))}
-        </div>
-
+      <div className="container-page max-w-3xl py-12 lg:py-16">
         {/* How it works */}
-        <section className="mt-12">
-          <h2 className="mb-4 text-[18px] font-bold tracking-h2">Cómo funciona</h2>
+        <section>
+          <h2 className="mb-4 text-[18px] font-bold tracking-h2 lg:text-[22px]">Cómo funciona</h2>
           <ol className="flex flex-col">
             {STEPS.map((step, i) => (
               <li key={step.t} className="flex gap-3.5">
@@ -116,7 +119,7 @@ export default async function VenderPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="my-12 rounded-card bg-brand-dark p-6 text-center text-white">
+        <section className="mt-12 rounded-card bg-brand-dark p-6 text-center text-white lg:p-8">
           <div className="text-[18px] font-bold tracking-h2">¿Listo para vender?</div>
           <p className="mt-1.5 text-[13px] text-[#bcd6c5]">
             Empezá con una tasación gratis hoy.
