@@ -15,18 +15,20 @@ export const metadata: Metadata = {
 
 export default function ServiciosPage() {
   return (
-    <div className="container-page max-w-2xl py-8 sm:py-12">
-      <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px]">Servicios</h1>
-      <p className="mt-2 text-[15px] leading-relaxed text-ink-muted">
-        Antes de comprar o vender, coordinamos profesionales de confianza en tu
-        zona. Pedí el servicio y te ponemos en contacto.
-      </p>
+    <div className="container-page py-8 sm:py-12">
+      <div className="max-w-2xl">
+        <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px] lg:text-[38px]">Servicios</h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-ink-muted sm:text-[16px]">
+          Antes de comprar o vender, coordinamos profesionales de confianza en tu
+          zona. Pedí el servicio y te ponemos en contacto.
+        </p>
+      </div>
 
-      <div className="mt-8 flex flex-col gap-6">
+      <div className="mt-8 grid items-start gap-6 lg:mt-10 lg:grid-cols-3 lg:gap-5">
         {SERVICE_CATEGORIES.map((cat) => {
           const providers = SEED_SERVICES.filter((s) => s.categoria === cat.categoria);
           return (
-            <section key={cat.categoria} className="rounded-card border border-line bg-surface p-5">
+            <section key={cat.categoria} className="flex flex-col rounded-card border border-line bg-surface p-5">
               <div className="flex items-start gap-3">
                 <div className="flex h-9 w-9 flex-none items-center justify-center rounded-tile bg-trust-icon text-brand">
                   <ShieldCheck size={18} />
@@ -62,7 +64,7 @@ export default function ServiciosPage() {
 
               <WaButton
                 href={serviceWaLink(cat.titulo)}
-                className="btn-whatsapp mt-3.5 w-full"
+                className="btn-whatsapp mt-5 w-full"
                 lead={{ tipo_lead: 'service', servicio: cat.titulo, source: '/servicios' }}
               >
                 Pedir {cat.titulo.toLowerCase()}
