@@ -91,7 +91,13 @@ export default function ListingMap({
     }
     mapRef.current = map;
 
+    // Ensure the canvas matches the container once layout settles — avoids a
+    // blank map when the flex/absolute container reports 0px at construction.
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(containerRef.current);
+
     map.on('load', () => {
+      map.resize();
       // Parcel polygon (detail page).
       if (polygon) {
         map.addSource('parcel', {
@@ -152,6 +158,7 @@ export default function ListingMap({
     }
 
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
       markerEls.current.clear();

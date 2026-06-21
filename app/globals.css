@@ -19,7 +19,8 @@
   h2,
   h3,
   h4 {
-    @apply font-sans text-ink;
+    @apply font-sans;
+    color: inherit;
     text-wrap: balance;
   }
 
