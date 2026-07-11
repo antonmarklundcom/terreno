@@ -1,24 +1,48 @@
 # ARCHITECTURE — terreno.com.py
 
-> **Status: PLAN, awaiting founder review. Supersedes the JetEngine/WordPress
-> "Phase 2" direction described in the current README.** This document is the
-> contract; when code and this file disagree, fix one of them in the same PR.
+> **Status: PLAN v2 (reconciled against propia.node @ `cdd2478`), awaiting
+> founder review. Supersedes the JetEngine/WordPress "Phase 2" direction in
+> the current README.** This document is the contract; when code and this
+> file disagree, fix one of them in the same PR.
 >
 > terreno.com.py is the land-only sibling of **propia.com.py**
-> (`antonmarklundcom/propia.node`). It follows the same playbook
-> (`.claude/skills/listing-site-hostinger/SKILL.md` in propia.node) and reuses
-> propia's proven patterns: `listing_sources` provenance with
-> `content_hash` + `dedup_key`, a `crm.ts` CRM boundary, `leads.vertical`
+> (`antonmarklundcom/propia.node`). It follows propia's playbook
+> (`.claude/skills/listing-site-hostinger/SKILL.md`, on branch
+> `claude/panel-auth-admin-review-dashboard-v5190h` — not yet merged to
+> propia main) and reuses propia's proven machinery: the
+> `normalize → dedup → upsert` import pipeline, `listing_sources`
+> provenance, the `crm.ts` CrmProvider boundary, `leads.vertical`
 > attribution, and rails-first milestones with STOP gates.
+>
+> Companion: `docs/PROPIA-MIGRATION.md` — the exact changes propia.node
+> needs for cross-posting (implementable from that note alone).
 
-> ⚠️ **Verification note.** This plan was written without read access to
-> propia.node (session repo scope denied the add). Every place where terreno
-> must byte-for-byte match propia is marked **`[VERIFY vs propia.node]`**.
-> Resolve all of these against propia's actual `SKILL.md`,
-> `ARCHITECTURE.md`, `src/db/schema.ts`, `src/config/verticals.ts` and
-> `src/lib/crm.ts` in the first implementation session — before M1 merges.
+## 0. Reconciliation summary (v1 → v2)
 
----
+Every `[VERIFY vs propia.node]` marker from v1 is resolved below. Three of
+the original assumptions were **wrong**, not just unverified:
+
+| # | v1 assumed | propia's reality | Consequence |
+| --- | --- | --- | --- |
+| **W1** | `dedup_key = '{origin_site}:{id}'` — a global cross-site identity | `dedup_key = sha1(canonPhone \| priceBucket($5k) \| areaBucket(10m²) \| locationId \| operation \| propertyType)` — a **site-local, deliberately fuzzy content identity**. Cross-system identity is the **unique `(source, source_external_id)` pair** | The whole §5 sync contract is rewritten. The feed carries no dedup keys at all; each side computes both hashes locally with the same ported algorithm (`normalize.ts`) |
+| **W2** | `content_hash` = sha256 of the whole normalized payload, transmitted in the feed | `sha1(title\|priceUsd\|areaM2\|landM2\|bedrooms\|bathrooms\|descriptionEs\|propertyState)`, `char(40)`, **computed by the receiving importer**, never transmitted | Feed payload is raw fields only (propia's `RawListing` shape) |
+| **W3** | Cross-posted identity travels as `canonical_slug`, suffix on collision | propia's URL identity is `public_id` (10-char) + cosmetic slug: `/propiedad/{slug}-{public_id}`; slug never recomputed | Replaced by the **shared-public_id rule** (§5.3, §7); terreno adopts the `{slug}-{public_id}` URL pattern before launch |
+
+Also corrected (smaller): leads — propia's `vertical` **is** the capture
+domain, so v1's separate `capture_site` column is redundant and dropped;
+locations — the dedup key needs a `locations` hierarchy with `full_slug`,
+so terreno adopts propia's locations table instead of denormalized
+departamento/ciudad strings; price — terreno adopts propia's
+`price_amount/price_currency/price_usd(write-normalized)` triple; status —
+terreno adopts propia's full lifecycle enum; cron — hPanel cron runs
+`npx tsx scripts/*.ts` directly (skill pattern), not token-gated HTTP
+routes.
+
+**Declared divergences from the playbook** (deliberate, with reasons):
+**D1** two-repo split vs skill Rule 0 (§3), **D2** canonical policy for
+land listings (§7), **D3** terreno-only land columns → lossy propia
+round-trip (§4), **D4** `leadType` union extended with `service` (§8),
+**D5** terreno's own `leads.origin_site` column (§8).
 
 ## 1. What this site is
 
@@ -26,20 +50,27 @@ A Paraguay land portal — **lotes, terrenos comerciales, campos, quintas,
 loteamientos**. Three businesses in one:
 
 1. **Listing portal** — brokers and owners list land (free at launch).
-2. **Seller-acquisition funnel** — "Vendé tu terreno" valuation flow; our own
-   commission business, the priority revenue path.
+2. **Seller-acquisition funnel** — "Vendé tu terreno" valuation flow; our
+   own commission business, the priority revenue path.
 3. **Content + services hub** — guides and a directory (tasador, escribano,
    agrimensor).
 
-Voice: **voseo es-PY**, WhatsApp-first. Land vocabulary only — never
-dormitorios/baños; the facts that matter are **superficie, frente/fondo,
-esquina, servicios, título al día (estado_titulo), financiación del
-vendedor**. Prices US$ primary / Gs. secondary. Design: calm Scandinavian
-minimalism, **map + key data are the hero; photos secondary**
+Voice: **voseo es-PY**, WhatsApp-first, one canonical strings approach —
+never neutral-Spanish variants. Land vocabulary only — never
+dormitorios/baños; what matters is **superficie, frente/fondo, esquina,
+servicios, título al día (estado_titulo), financiación del vendedor**.
+Prices US$ primary / Gs. secondary. Design: calm Scandinavian minimalism,
+**map + key data are the hero; photos secondary**
 (`docs/DESIGN_HANDOFF.md` is the design source of truth).
 
-Maintained by a solo founder + Claude Code. Every architectural choice below
-optimizes for **one person being able to debug it with curl at 11pm**.
+Maintained by a solo founder + Claude Code. Every choice below optimizes
+for **one person being able to debug it with curl at 11pm**.
+
+**Model policy** (matching propia's): **Fable 5** — architecture, schema,
+the expensive-to-unwind problems, STOP-gate reviews. **Opus 4.8** — heavy
+implementation (DB layer, sync pipeline, CRM boundary). **Sonnet 5** —
+templated work (pages, forms, copy wiring). Every milestone ends in a STOP
+gate the founder clears; no session starts the next milestone past a gate.
 
 ## 2. Stack
 
@@ -47,295 +78,371 @@ optimizes for **one person being able to debug it with curl at 11pm**.
 | --- | --- | --- |
 | Framework | Next.js 15 (App Router) + TypeScript strict | Already built; SSR + ISR + route handlers — **never `output: 'export'`** |
 | Styling | Tailwind CSS, tokens in `tailwind.config.ts` | Components read the theme, never hardcoded hex |
-| Maps | MapLibre GL JS + Carto raster tiles | No API key, no billing |
-| DB | **MySQL (Hostinger Cloud plan) + Drizzle ORM** | Terreno's **own database + own DB user** on the shared plan — never propia's DB (§4) |
-| Validation | zod on every API input | Already the rule |
-| CRM | GoHighLevel via `lib/crm.ts` boundary | Port of propia's `src/lib/crm.ts` pattern (§8) `[VERIFY vs propia.node]` |
-| Hosting | Hostinger Cloud — **own Node.js app**, domain terreno.com.py | Same plan as propia, separate app + separate deploy |
-| Cron | hPanel cron → token-gated route handlers | No long-running workers on managed Node |
-| CI | GitHub Actions: lint + typecheck + test + build | Day-0 rails land in PR #1 (M0) |
-| Node | 22.x LTS | Pin in CI and hPanel `[VERIFY vs propia.node SKILL.md for exact pin]` |
+| Maps | MapLibre GL JS + free Carto/OSM raster tiles | No API key, no billing |
+| DB | **MySQL 8 (Hostinger plan) + Drizzle ORM** | Terreno's **own database + own DB user** — never propia's DB (§3). No stored procs, no MySQL-only JSON tricks: the Postgres escape hatch stays open (propia rule) |
+| Local dev DB | `docker-compose.yml` MySQL 8 + documented no-DB verify path | Skill day-0 item; cloud sessions may lack Docker → unit tests over pure logic + `next build` must suffice |
+| Validation | zod on every API input | Existing rule |
+| CRM | GoHighLevel via `lib/crm.ts` (`CrmProvider` interface) | Port of propia's `src/lib/crm.ts` incl. ConsoleCrm dev fallback (§8) |
+| Hosting | Hostinger Cloud — **own Node.js app**, domain terreno.com.py | Same plan as propia, separate app + deploy. Brazil/São Paulo region |
+| DB pool | mysql2, `connectionLimit: 8` max | Hostinger caps concurrent MySQL connections per user (skill) |
+| Cron | hPanel cron → `npx tsx scripts/<job>.ts` | Skill pattern; every job idempotent + re-runnable |
+| Images | Feed image URLs stored as-is, display-only (v1) | Mirrors propia's interim r2Key-holds-URL pattern; R2 pass later if terreno hosts own uploads |
+| CI | lint + typecheck + test + build + `npm audit --audit-level=high` | Day-0 rails, PR #1 (M0); skill's exact workflow shape |
+| Node | 22.x LTS | Pinned in CI and hPanel |
 
 ## 3. The one big decision: how the two sites share listings
 
 ### Requirement
 
-- A land listing (`property_type ∈ {terreno, quinta, …land-adjacent}`
-  `[VERIFY exact set vs propia's verticals.ts]`) published on propia.com.py
-  must appear on terreno.com.py, and vice versa.
-- Re-syncs must be idempotent — no duplicate-listing chaos.
+- A land listing published on propia.com.py must appear on
+  terreno.com.py and vice versa. Land-adjacent set **confirmed against
+  propia's `property_type` enum: `['terreno','quinta']`** (propia has no
+  campo/lote/loteamiento types — mapping in §5.4).
+- Re-syncs idempotent — no duplicate-listing chaos.
 - One founder operates both sites.
 
-### Options weighed
+### ⚠️ DIVERGENCE D1 — the playbook says don't build this
 
-**(a) Shared MySQL database** — both apps point at one Hostinger DB; terreno
-reads `WHERE property_type IN ('terreno','quinta',…)`.
+This must be stated plainly. Propia's skill file, Rule 0:
 
-- ✅ Zero sync lag, zero sync code.
-- ❌ **Schema coupling is the killer.** Propia's schema is owned by propia's
-  Drizzle migrations. Every propia migration becomes a potential silent
-  breaking change to terreno, discovered only in production, and forces
-  lockstep deploys of two apps — the worst possible failure mode for a solo
-  founder.
-- ❌ Terreno→propia cross-posting means terreno **writes into propia's
-  tables**, bypassing every invariant propia enforces in app code
-  (slug rules, moderation state, dedup logic).
-- ❌ Two apps × connection pools against one Hostinger MySQL user hits
-  `max_user_connections` limits on shared plans; separate DBs with separate
-  users isolate this.
-- ❌ No blast-radius isolation: one bad migration or runaway query degrades
-  both sites at once.
+> "Same inventory domain, different slice/brand (terreno.com.py = propia's
+> terrenos…) → **it's a vertical config flip in the existing repo**…
+> Never fork the repo for these."
 
-**(b) Feed + importer sync** — each site exposes a token-gated JSON feed of
-its **own-origin** listings; the other site ingests it on a cron through the
-`listing_sources` dedup pipeline (`content_hash` change detection,
-`dedup_key` identity).
+and its "Connecting multiple domains" section:
 
-- ✅ **The feed is a versioned contract; the schemas stay decoupled.** Propia
-  can migrate its internals freely as long as the feed keeps its shape.
-- ✅ Idempotent by construction — this is exactly what propia's
-  `listing_sources` pipeline was built for; cross-posting is "just another
-  source". No new machinery, a proven one.
-- ✅ Debuggable with `curl $FEED_URL | jq` — one founder can see the entire
-  contract in one command.
-- ✅ Failure isolation: if a feed is down, the other site serves stale
-  cross-posted listings and keeps working.
-- ❌ Sync lag = cron interval (15 min). Land listings change slowly;
-  acceptable.
-- ❌ Two crons to babysit. Mitigated: idempotent re-runs mean a missed tick
-  costs nothing; a `/api/health` check reports last-sync age.
+> "do NOT stand up a second app that 'fetches' listings from the first. A
+> second deployment sharing data means an internal API, auth between apps,
+> cache/sync drift, and double ops."
 
-### Decision: **(b) Feed + importer, both directions.**
+Propia's own ARCHITECTURE.md (v2 amendments) dropped the terreno beachhead
+and pre-declared `terreno.com.py` in `src/config/verticals.ts` as a
+**disabled vertical** (`filters: {property_type:["terreno"]}, copy:"land",
+enabled:false`) — i.e. propia's standing plan was to serve terreno.com.py
+from propia's engine as a config flip.
 
-Schema decoupling and idempotency-by-construction outweigh 15 minutes of sync
-lag for an asset class where listings live for months. Shared DB optimizes the
-thing that doesn't matter (lag) at the cost of the thing that does (a solo
-founder's ability to change either site without breaking the other).
+**This plan overrides that, per the founder's explicit decision**, on these
+grounds:
 
-### The honest question: should terreno be a separate repo at all?
+1. **Terreno is closer to the skill's "different schema → new repo" branch
+   than to a pure slice.** Propia's listings table cannot represent what
+   makes a land portal good: no `frente_m`/`fondo_m`, no `esquina`, no
+   `estado_titulo`, no `financiacion`, no `servicios` facets, no parcel
+   `polygon`. Terreno's tipo taxonomy (lote urbano / campo / quinta /
+   loteamiento) collapses to two propia enum values. A vertical flip would
+   ship a land site that can't filter on frente or título al día.
+2. **The frontends diverge on purpose** — map-first cards, land facets,
+   a services/guides hub. Host-based theming of genuinely different UIs in
+   one App Router tree taxes every future change to either site.
+3. **Blast-radius isolation** for a solo founder: a broken terreno deploy
+   never takes down propia (the revenue site), and vice versa.
 
-The alternative — serve terreno.com.py as a **vertical of propia.node**
-(host-based routing in one app, one DB, zero sync) — was seriously considered.
-It eliminates this entire section: no feeds, no crons, no cross-domain
-canonical juggling. If the two sites shared a design system and page
-structure, it would win.
+The skill's costs are real and accepted knowingly: sync machinery (bounded
+— it's propia's proven pipeline reused), a shared secret between apps,
+~15 min content lag, double deploy ops.
+**Reconsider triggers:** propia grows the land-specific columns; the
+frontends converge; sync debugging eats founder time; a third
+cross-posting domain appears. The shared-public_id rule (§5.3) keeps a
+later merge cheap.
 
-**Recommendation: keep the split**, for three reasons:
+Consequence for propia: its `verticals.ts` terreno entry **stays
+`enabled: false` permanently**; terreno.com.py DNS points at the terreno
+app. (Unknown/disabled hosts on propia's middleware resolve to propia, so
+nothing breaks if DNS ever misroutes.)
 
-1. **The frontends diverge on purpose.** Terreno is map-first with
-   land-specific facets (superficie, frente, esquina, estado_titulo,
-   financiación); its cards, detail pages, search UX and copy are not
-   propia's with a different logo. Host-based theming of genuinely different
-   UIs in one App Router tree makes *every* future change to either site
-   more expensive.
-2. **Retrofit cost lands on propia.** Multi-domain routing (middleware host
-   rewrites, per-host sitemaps/robots/canonicals, per-host ISR) is a
-   structural refactor of the working, revenue-adjacent site — riskier than
-   adding one read-only feed endpoint to it.
-3. **Blast-radius isolation.** Separate deploys mean a broken terreno
-   experiment never takes down propia, and vice versa.
+### Mechanism, weighed
 
-**Reconsider the split if:** the two frontends converge to shared components,
-or sync ops start eating real founder time, or a third vertical domain
-appears (three sync meshes is where feeds stop scaling and a single
-multi-domain app wins). This is a two-way door: the feed contract makes a
-later merge *easier*, because listing identity (`dedup_key`) is already
-global.
+**(a) Shared MySQL database** — rejected: every propia Drizzle migration
+becomes a silent breaking change to terreno with forced lockstep deploys;
+terreno writing into propia's tables bypasses propia's app-level invariants
+(review queue, slug/public_id discipline, dedup); two apps against one DB
+user compound Hostinger's per-user connection cap; no blast-radius
+isolation.
+
+**(b) Feed + importer (chosen)** — each site exposes a token-gated JSON
+feed of its **own-origin published** land listings in propia's `RawListing`
+wire shape; the other ingests on a 15-min cron through the **same
+`normalize → dedup → upsert` pipeline propia already runs** for
+InfoCasas/Clasipar/white-glove. Cross-posting is literally one more import
+source. Schemas stay decoupled behind a versioned wire contract; re-runs
+are idempotent by construction (propia's M2 gate: "importer re-runs produce
+zero duplicates"); the whole contract is debuggable with
+`curl -H "Authorization: Bearer …" $FEED | jq`.
 
 ## 4. Data model
 
 Terreno's **own MySQL database** (`terreno_prod`, own user) on the shared
-Hostinger plan. Drizzle ORM, migrations in-repo. Small pool (≤5 connections,
-mysql2) — Hostinger shared MySQL is connection-stingy.
-
-Field naming and table shapes must align with propia's `src/db/schema.ts`
-wherever the concept is shared, so the feed mapping stays mechanical
-**`[VERIFY every table below vs propia.node schema before M1 merges]`**.
+Hostinger plan. Drizzle ORM, migrations in-repo. Names below are the
+**confirmed propia conventions** adopted wherever the concept is shared,
+so feed mapping stays mechanical.
 
 ```
-listings
-  id (pk), slug (unique), origin ENUM('local','propia'),
-  owner_type ENUM('broker','casa_propia'), owner_id (fk),
+listings                          -- wide + denormalized, propia pattern
+  id (bigint pk), public_id CHAR(10) UNIQUE,   -- URL identity, propia's makePublicId()
+  slug VARCHAR(180),                            -- cosmetic, never recomputed
+  origin ENUM('local','propia'),                -- who authored it (feed loop guard, §5.2)
   tipo ENUM('lote_urbano','terreno_comercial','campo','quinta','loteamiento'),
-  titulo, descripcion,
-  departamento, ciudad, barrio?, lat, lng, polygon? (JSON),
-  superficie_m2 (canonical unit — m², always),        -- precio_m2 is DERIVED, never stored
-  precio_monto, precio_moneda ENUM('USD','PYG'),
-  frente_m?, fondo_m?, esquina BOOL,
-  servicios (JSON array), estado_titulo ENUM('con_titulo','en_proceso'),
-  financiacion ENUM('contado','cuotas'),
-  loteamiento_aggregate? (JSON),
-  images (JSON array),
-  featured_until? (unix ts — timestamp gating, not a boolean),
-  status ENUM('published','paused','sold'),
-  created_at, updated_at
+  status ENUM('draft','pending_review','published','paused','sold','removed'),
+                                                -- propia lifecycle (minus 'rented'; land v1 is venta-only)
+  title VARCHAR(180), description_es TEXT,
+  price_amount DECIMAL(14,2), price_currency ENUM('USD','PYG'),
+  price_usd DECIMAL(12,2),                      -- normalized AT WRITE TIME; ALL filtering uses it (propia rule)
+  superficie_m2 DECIMAL(12,2),                  -- canonical unit m²; ↔ propia listings.land_m2
+  frente_m, fondo_m DECIMAL(8,2)?,              -- terreno-only (D3)
+  esquina BOOL,                                 -- terreno-only (D3)
+  servicios JSON,                               -- display+facet; terreno-only (D3)
+  estado_titulo ENUM('con_titulo','en_proceso')?,   -- terreno-only (D3); NULL for imports
+  financiacion ENUM('contado','cuotas')?,           -- terreno-only (D3); NULL for imports
+  loteamiento_aggregate JSON?,
+  location_id fk NOT NULL,                      -- deepest known level (propia pattern)
+  lat DECIMAL(9,6)?, lng DECIMAL(9,6)?, polygon JSON?,
+  owner_id fk,                                  -- → owners
+  images JSON,                                  -- URL list, display-only v1
+  featured_until DATETIME?,                     -- site-local monetization; NEVER synced
+  published_at, created_at, updated_at
+  INDEX idx_search (status, tipo, location_id, price_usd)
+  INDEX idx_geo (status, lat, lng)
 
-listing_sources        -- provenance + idempotency; mirrors propia's table
-  id (pk), listing_id (fk),
-  source VARCHAR        -- 'seed' | 'admin' | 'propia'
-  source_id VARCHAR     -- id in the source system
-  dedup_key VARCHAR (unique)   -- global identity: '{origin_site}:{origin_id}'
-  content_hash CHAR(64)        -- sha256 of the normalized feed payload
-  first_seen_at, last_seen_at, last_changed_at
+locations                         -- propia's hierarchy table, same shape
+  id, parent_id, level ENUM('pais','departamento','ciudad','barrio'),
+  name, slug, full_slug UNIQUE,                 -- 'central/luque' — feed location key (§5)
+  lat?, lng?, listing_counts JSON               -- cached; powers facets + thin-page rule
+
+listing_sources                   -- byte-for-byte propia's table
+  id, listing_id fk,
+  source ENUM('seed','manual','import_propia'),
+  source_url VARCHAR(600)?, source_external_id VARCHAR(120)?,
+  content_hash CHAR(40),                        -- sha1, computed by OUR importer (normalize.ts port)
+  dedup_key CHAR(40),                           -- sha1(phone|price_bucket|m2_bucket|location_id|operation|tipo)
+  first_seen_at, last_seen_at                   -- absent-from-feed → pause via last_seen_at
+  UNIQUE uq_source (source, source_external_id)
+  INDEX idx_dedup (dedup_key)
 
 owners
-  id (pk), nombre, telefono_wa, inmobiliaria?, tipo ENUM('broker','casa_propia')
+  id, nombre, telefono_wa, inmobiliaria?, tipo ENUM('broker','casa_propia')
 
-leads
-  id (pk), tipo_lead ENUM('listing_contact','valuation','service'),
-  vertical VARCHAR DEFAULT 'terreno',   -- propia's leads.vertical pattern
-  capture_site VARCHAR,                 -- 'terreno.com.py' (always, here)
-  origin_site VARCHAR,                  -- listing's origin ('terreno.com.py' | 'propia.com.py')
-  listing_id?, listing_dedup_key?,
-  contacto (JSON), payload (JSON), source_page?,
-  crm_status ENUM('pending','sent','failed'), created_at
+leads                             -- propia's shape + terreno extensions
+  id, lead_type ENUM('buyer','seller','valuation','service'),   -- D4: 'service' is terreno-only
+  vertical VARCHAR(40) DEFAULT 'terreno',       -- propia semantics: the CAPTURING domain
+  origin_site VARCHAR(40)?,                     -- D5: listing's origin ('terreno'|'propia') for cross-post attribution
+  listing_id fk?, name?, whatsapp NOT NULL, email?, message?, utm JSON?,
+  routed_to ENUM('agent','internal'),           -- propia enum subset: broker→'agent', casa_propia/valuation/service→'internal'
+  ghl_contact_id VARCHAR(80)?,                  -- set from the GHL webhook response (propia pattern)
+  created_at
 ```
 
-The existing `lib/types.ts` `Listing` shape is kept as the app-facing domain
-model (it already encodes every land-specific field correctly); the DB rows
-map to it inside the repo seam. Add `origin: 'local' | 'propia'` to it.
+**DIVERGENCE D3 (accepted):** the terreno-only columns (frente, fondo,
+esquina, servicios, estado_titulo, financiacion, polygon) do not exist in
+propia's schema. Propia-origin listings arrive with them NULL (UI renders
+gaps gracefully); terreno-origin listings lose them on propia (propia shows
+its normal card). Round-trip is lossy for these fields, by design — the
+alternative is growing propia's schema, which is propia's call, not ours.
 
-### The data seam (unchanged rule, new source)
+`lib/types.ts`'s `Listing` stays the app-facing domain model (add `origin`,
+`publicId`; ubicacion names resolve from `locations`). The **data seam rule
+is unchanged**: `lib/listings-repo.ts` is the sole data-access point; M1
+swaps its `fetchSource()` to MySQL; the typed seed remains a permanent
+fallback (DB down → site still renders). Nothing else imports `lib/seed/*`
+or the db client.
 
-`lib/listings-repo.ts` stays the **sole** data-access point. M1 swaps its
-`fetchSource()` from the seed array to MySQL; the seed remains a permanent
-fallback (DB unreachable → site still renders). Nothing outside the repo
-module may import `lib/seed/*` or the db client.
+## 5. Cross-posting sync contract (rewritten post-reconciliation)
 
-## 5. Cross-posting sync contract
+### 5.1 Wire format = propia's `RawListing`
 
-Both sites implement the same two halves:
+Each site exposes `GET /api/feed/listings` — `Authorization: Bearer
+$FEED_SHARED_SECRET` — a full snapshot (land volume is small; snapshots
+maximize idempotency) of **own-origin, `status='published'`,
+`operation='venta'`** land listings:
 
-**Feed (outbound):** `GET /api/feed/listings` — token-gated
-(`Authorization: Bearer $FEED_SHARED_SECRET`), returns a full snapshot
-(land volume is small; snapshots beat pagination for idempotency):
-
-```json
-{ "version": 1, "site": "terreno.com.py", "generated_at": "...",
+```jsonc
+{ "version": 1, "site": "terreno.com.py", "generatedAt": "…",
   "listings": [ {
-      "dedup_key": "terreno:123", "canonical_slug": "lote-esquina-luque-360m2",
-      "content_hash": "sha256:...", "status": "published",
-      "tipo": "lote_urbano", "titulo": "...", "descripcion": "...",
-      "ubicacion": {...}, "superficie_m2": 360, "precio": {...},
-      "frente_m": 12, "esquina": true, "servicios": [...],
-      "estado_titulo": "con_titulo", "financiacion": "cuotas",
-      "owner": { "tipo": "broker", "nombre": "...", "telefono_wa": "..." },
-      "images": [...], "updated_at": "..."
+      // ---- exactly propia's RawListing fields (src/lib/import/types.ts),
+      // ---- minus `source` (the importer sets its own):
+      "sourceExternalId": "k3j9x2m4qa",       // = origin public_id (identity within the source)
+      "sourceUrl": "https://terreno.com.py/terreno/lote-esquina-luque-k3j9x2m4qa",
+      "operation": "venta",
+      "propertyType": "terreno",              // WIRE VOCABULARY IS PROPIA'S ENUM (§5.4)
+      "title": "…", "descriptionEs": "…",
+      "priceAmount": 45000, "priceCurrency": "USD",
+      "landM2": 360,                           // ← terreno superficie_m2
+      "locationFullSlug": "central/luque",     // resolved to each side's own location_id
+      "locationName": "Luque",
+      "lat": -25.27, "lng": -57.49,
+      "contactPhone": "595981123456",          // feeds dedup_key; feed is token-gated
+      "imageUrls": ["…"],
+      // ---- extensions (receivers ignore unknown keys):
+      "publicId": "k3j9x2m4qa", "slugText": "lote-esquina-luque",
+      "contactName": "Inmo García",
+      "landExtras": { "frenteM": 12, "fondoM": 30, "esquina": true,
+        "servicios": ["agua","energia"], "estadoTitulo": "con_titulo",
+        "financiacion": "cuotas", "tipoTerreno": "lote_urbano" }
   } ] }
 ```
 
-**Rules (both sites, non-negotiable):**
+No hashes travel on the wire (**W1/W2 fix**): each importer computes
+`content_hash` and `dedup_key` locally with a **verbatim port of propia's
+`src/lib/import/normalize.ts`** (`canon`, `canonPhone`, `toPriceUsd`,
+`priceBucket` $5k, `areaBucket` 10m², `contentHash`, `dedupKey`) — same
+sha1 recipes on both sides, so a listing that reaches a site through two
+paths (e.g. scraped by propia from Clasipar AND cross-posted from terreno)
+collapses via `dedup_key` exactly like any other multi-source listing.
+`landExtras` is **excluded from `contentHash`** on the propia side by
+construction (propia's hash doesn't know those fields); terreno's port
+keeps the hash recipe identical so change-detection agrees on both sides —
+land-extras-only edits therefore don't re-publish on propia, which is
+correct (propia can't render them anyway).
 
-1. **A feed contains only `origin='local'` listings.** Imported listings are
-   never re-exported — this is the loop/echo guard.
-2. `dedup_key = '{origin_site_short}:{origin_listing_id}'` is the global
-   identity, immutable for the life of the listing.
-3. Importers upsert by `dedup_key`: unknown → insert; known +
-   `content_hash` unchanged → touch `last_seen_at` only; known + hash changed
-   → update. **Re-running a sync is always a no-op on unchanged data.**
-4. Listings present locally (for that source) but absent from the feed →
-   mark `status='paused'` (unpublished at origin), never hard-delete.
-5. `canonical_slug` from the origin is used verbatim; on local collision,
-   suffix `-2`, `-3`… (dedup_key still disambiguates identity).
-6. Only land types cross to terreno: propia's feed filters
-   `property_type ∈ {terreno, quinta, …}` `[VERIFY vs verticals.ts]`;
-   terreno's listings are all land, so its feed sends everything local.
-7. Feed `version` field; breaking changes bump it and importers refuse
-   unknown majors loudly (health check, not silent skips).
+### 5.2 Importer semantics = propia's `upsert.ts` decision tree, verbatim
 
-**Importer (inbound):** `POST /api/sync/import` (token-gated), invoked by an
-hPanel cron **every 15 min**. Pulls the sibling feed, runs the upsert above,
-records `{fetched, inserted, updated, unchanged, paused}` counters readable at
-`/api/health`.
+Per feed row (`source='import_propia'` on terreno, `'import_terreno'` on
+propia):
 
-## 6. URL scheme (unchanged — already built)
+1. **`(source, source_external_id)` already seen?** → `content_hash`
+   identical: bump `last_seen_at` only *(unchanged)*; changed: update the
+   source-controlled listing fields + hash *(updated)*.
+2. **Else `dedup_key` matches an existing listing (any source)?** → attach
+   a new `listing_sources` row to that listing, don't create *(deduped)*.
+3. **Else create** + source row *(created)* — with `publish: true`
+   (feed rows were already reviewed/published at origin; skipping
+   `pending_review` mirrors propia's trusted-batch option).
+
+**Pause pass** (after each run): listings whose *only* source is the
+cross-import source and whose `last_seen_at` predates this run →
+`status='paused'` (unpublished at origin). Never hard-delete.
+
+**Loop guard:** each feed exports only listings with **no**
+`listing_sources` row from the cross-import source. (Edge accepted: a
+propia-scraped listing that dedup-matches an inbound terreno row gains an
+`import_terreno` source row and drops out of propia's feed — safe
+direction: no echo, no duplicate.)
+
+**Runner:** `scripts/sync-import.ts`, hPanel cron every 15 min (skill
+pattern — direct `npx tsx`, not an HTTP route). Idempotent; writes
+`{created,updated,unchanged,deduped,skipped,paused}` counters to a
+`sync_runs` log table surfaced at `/api/health`. On change, ping
+`/api/revalidate` (token) for ISR.
+
+### 5.3 Shared-public_id rule (W3 fix)
+
+Cross-posted listings **keep the origin's `public_id` and slug on both
+sites**. Terreno's importer inserts with the feed's `publicId`/`slugText`;
+propia's importer does the same (one-line `insertListing` override — see
+migration note). This makes every canonical URL **deterministically
+constructible from either site's own row** (§7) with propia's
+`urls.ts`-style builder — no lookup tables, no collision suffixes
+(public_id collisions are ~nil by construction).
+
+### 5.4 Type mapping (propia enum ⇄ terreno tipo)
+
+| terreno tipo → wire `propertyType` | wire → terreno tipo |
+| --- | --- |
+| `lote_urbano`, `terreno_comercial`, `campo`, `loteamiento` → `terreno` | `terreno` → `landExtras.tipoTerreno` when present; else heuristic: `landM2 ≥ 10 000` → `campo`, else `lote_urbano` |
+| `quinta` → `quinta` | `quinta` → `quinta` |
+
+Propia's feed filter is `propertyType IN ('terreno','quinta')` — the
+confirmed land-adjacent set (propia's enum has nothing else land-shaped).
+Inbound owner mapping: `contactName`/`contactPhone` → `owners` row,
+`tipo='broker'` default (FSBO-vs-broker isn't knowable from the wire;
+broker routing is the safe default — leads go to the listed contact).
+
+## 6. URL scheme
+
+Change from the built v1: listing detail adopts propia's
+identity pattern **before launch** (permanent SEO contract, cheap now,
+impossible later):
 
 | Route | Rendering | Purpose |
 | --- | --- | --- |
 | `/` | SSG | Home: dual-path browse + sell |
 | `/buscar` | SSR | Search — split map + list, URL-driven filters |
-| `/terreno/[slug]` | SSG + ISR | Listing detail (map-first) |
-| `/[tipo]/[departamento]` and `/[tipo]/[departamento]/[ciudad]` | SSG + ISR | Programmatic SEO landings |
+| **`/terreno/{slug}-{publicId}`** | SSG + ISR | Listing detail (was `/terreno/[slug]`); parse/build in `lib/urls.ts` — one file, propia pattern |
+| `/[tipo]/[departamento]` · `/[tipo]/[departamento]/[ciudad]` | SSG + ISR | Programmatic SEO landings (tipos pluralized: lotes, campos, quintas, loteamientos, terrenos-comerciales) |
 | `/vender` | SSG + ISR | Seller/valuation funnel |
 | `/guias`, `/guias/[slug]`, `/servicios` | SSG + ISR | Content hub |
-| `/publicar` | SSG | Thin page → links to propia's `/publicar` (§9) |
+| `/publicar` | SSG | Thin page → propia's `/publicar` (§9) |
 | `/api/v1/listings…`, `/api/leads`, `/api/v1/leads` | handlers | Public API + lead intake |
-| `/api/feed/listings` | handler | Outbound sync feed (token) |
-| `/api/sync/import` | handler | Inbound importer (token, cron) |
-| `/api/health` | handler | Uptime + last-sync age + counters |
-| `/api/revalidate` | handler | Token-gated on-demand ISR, called by the importer after changes |
+| `/api/feed/listings` | handler | Outbound sync feed (Bearer token) |
+| `/api/health` | handler | Uptime + last-sync age + run counters |
+| `/api/revalidate` | handler | Token-gated ISR, pinged by `scripts/sync-import.ts` |
 
-`[tipo]` slugs: `lotes` · `terrenos-comerciales` · `campos` · `quintas` ·
-`loteamientos`. Landing pages with zero listings are `noindex`.
+Landing pages with zero listings stay `noindex` (v1 rule; graduate to
+propia's full indexability rule — count ≥ 3 → index+sitemap, 1–2 →
+noindex,follow, 0 → 410/parent — in ONE module consumed by both templates
+and sitemap, per the skill).
 
-## 7. Canonical / SEO policy — one rule
+## 7. Canonical / SEO policy — one rule (DIVERGENCE D2)
 
 **terreno.com.py is canonical for every land listing, on both sites,
 regardless of where it was published.**
 
-Rationale: terreno.com.py is an exact-match domain whose entire reason to
-exist is owning land SERPs. "Canonical = origin site" would split link equity
-arbitrarily by where the lister happened to click publish; "propia always"
-would make terreno permanently unrankable and pointless. One deterministic
-rule, no per-listing judgment.
+- **terreno** detail pages: self-canonical
+  (`https://terreno.com.py/terreno/{slug}-{publicId}`); all published
+  listings in terreno's sitemap.
+- **propia** detail pages where `propertyType ∈ ('terreno','quinta')`:
+  render normally, emit cross-domain
+  `<link rel="canonical" href="https://terreno.com.py/terreno/{slug}-{public_id}">`
+  — constructible from propia's **own** row thanks to the shared-public_id
+  rule — and drop out of propia's sitemap. Browse/category/guide pages on
+  both sites stay self-canonical (the rule covers detail pages only).
 
-Concretely:
+This **amends propia's stated policy** ("listing detail pages exist
+canonically on propia.com.py only" / skill: "canonical on the primary
+domain only"). The skill's rule assumed feeder domains are doors on
+propia's engine; terreno is instead the primary brand *for land*, and an
+exact-match domain that canonicalizes its inventory away can never rank —
+defeating its reason to exist. Same owner, one deterministic rule, no
+duplicate-content exposure. Cost accepted: propia cedes land-detail SERPs
+to terreno. This needs explicit sign-off in the propia repo (migration
+note item 4) since it edits propia's contract.
 
-- **terreno** listing detail pages: self-canonical
-  (`https://terreno.com.py/terreno/{slug}`). All published listings in
-  terreno's sitemap.
-- **propia** land-listing detail pages: render normally (good UX, internal
-  links intact) but emit cross-domain
-  `<link rel="canonical" href="https://terreno.com.py/terreno/{slug}">` and
-  are **excluded from propia's sitemap**. The mapping is deterministic
-  because `canonical_slug` travels in the feed both ways.
-- Browse/search/landing pages are site-specific content and stay
-  self-canonical on each site — the rule applies to listing **detail** pages
-  only.
-- Cost acknowledged: propia cedes land-SERP presence to terreno. Same owner,
-  and terreno converts better for land — that's the strategy, not a bug.
+Per-domain launch checklist from the skill applies to terreno at M0:
+DNS → hPanel domain + SSL → distinct copy → verify canonicals → submit
+terreno's sitemap in its own Search Console property.
 
 ## 8. Leads & CRM boundary
 
-**Rule: the capturing site processes the lead; leads are never synced between
-sites.** Listings sync; leads don't.
+**Rule: the capturing site processes the lead; leads are never synced.**
+Listings sync; leads don't. Land leads captured on propia stay in propia's
+pipeline (its `vertical` column already attributes the capturing domain —
+confirmed semantics: "which domain captured it").
 
-- `lib/crm.ts` is the **only** module that talks to GHL — a port of propia's
-  `src/lib/crm.ts` boundary `[VERIFY signatures vs propia.node]`. Everything
-  else (route handlers, `lib/leads.ts` orchestrator) calls `crm.ts`; no GHL
-  URL appears anywhere else.
-- Every lead carries `vertical: 'terreno'` (propia's `leads.vertical`
-  pattern) plus **`capture_site`** ('terreno.com.py' here) and
-  **`origin_site`** (from the listing's `origin` — this is how the origin
-  site gets attribution for leads on cross-posted listings). One GHL account,
-  one land pipeline; the founder filters/reports by these fields.
-- Existing routing table stays: `listing_contact` on a broker listing →
-  broker's WhatsApp; `casa_propia` listings, valuation and service leads →
-  our number/pipeline. Broker WhatsApp routing works identically for
-  cross-posted listings because `owner.telefono_wa` travels in the feed.
-- Existing resilience rules stay: fan-out via `Promise.allSettled` with
-  retries; **logger/CRM failure never fails the user's WhatsApp action**;
-  unset env vars self-disable. New: leads are also written to the local
-  `leads` table (with `crm_status`) so nothing is lost when GHL is down.
+- `lib/crm.ts` is a **port of propia's `src/lib/crm.ts`**: the
+  `CrmProvider` interface (`pushLead(lead): Promise<CrmResult>`,
+  `sendOtp(whatsapp, code)` — kept for interface compatibility even though
+  terreno v1 has no OTP flow), `GhlProvider` posting
+  `{event:'lead', …payload}` to `GHL_WEBHOOK_URL`, **`ConsoleCrm` fallback
+  when the env var is unset** (dev needs no GHL), `CrmResult.contactId` →
+  `leads.ghl_contact_id`. Nothing outside this file knows GHL exists.
+- Payload = propia's `LeadPayload` shape (name/whatsapp/email/message/utm,
+  `listing: {publicId, title, url, priceUsd, operation}`), with
+  `vertical: 'terreno'` and two declared extensions: **D4** `leadType`
+  union adds `'service'` (terreno's services directory; propia's enum
+  lacks it — stays terreno-local, GHL just receives the string) and
+  **D5** `originSite` (`'terreno' | 'propia'`, from the listing's
+  `origin`) — the cross-post attribution the founder filters GHL by.
+  `routedTo`: broker listings → `'agent'`, everything else → `'internal'`
+  (propia's enum values).
+- Propia's ordering adopted: **DB row first** (source of truth for the
+  money report), then `pushLead`. Existing terreno resilience rules stay:
+  CRM/logger failure never fails the user's WhatsApp action; broker
+  `listing_contact` → broker's WhatsApp, casa_propia/valuation/service →
+  our number. Cross-posted listings route identically because
+  `contactPhone` travels in the feed.
+- Sheets fan-out stays in the `lib/leads.ts` orchestrator (it's a logger,
+  not a CRM; doesn't belong behind the CrmProvider interface).
 
 ## 9. Publishing
 
-**Cheapest correct answer: reuse propia's `/publicar`. No wizard in this
-repo.**
-
-- terreno.com.py gets a thin `/publicar` page ("Publicá tu terreno gratis")
-  that links to propia's wizard (pre-selecting a land type if propia's
-  wizard supports a query param — nice-to-have, not required). The listing
-  publishes into propia, and the M2 importer brings it to terreno within one
-  cron tick.
-- The **terreno→propia direction still exists and matters**: listings the
-  founder creates directly in terreno (admin/CLI-seeded `origin='local'`
-  rows — the casa_propia inventory) flow out through terreno's feed to
-  propia's importer.
-- Terreno's `/vender` valuation funnel is unchanged — that's a lead flow,
-  not a publish flow.
-- Build a native terreno wizard only if the funnel data ever proves land
-  sellers bounce off the propia-branded wizard. Not before.
+**Reuse propia's `/publicar` wizard. No wizard in this repo.** Terreno's
+`/publicar` is a thin voseo page linking to propia's wizard (optional
+query param to preselect a land type — migration note item 6). The listing
+publishes into propia, clears propia's review queue, and the M2 importer
+lands it on terreno within one cron tick. The terreno→propia direction
+still exists for founder-created `origin='local'` inventory (admin/CLI —
+the casa_propia stock) via terreno's feed. `/vender` (valuation funnel)
+is unchanged — a lead flow, not a publish flow. Build a native wizard only
+if funnel data proves land sellers bounce off the propia-branded one.
 
 ## 10. Environment variables
 
@@ -347,124 +454,107 @@ NEXT_PUBLIC_BUSINESS_NAME=Terreno
 NEXT_PUBLIC_FEATURE_FEATURED_BADGES=true
 
 # M1
-DATABASE_URL=mysql://terreno_user:…@localhost/terreno_prod
+DATABASE_URL=mysql://terreno_user:…@…/terreno_prod
+USD_TO_PYG=7300                  # write-time price_usd normalization (propia pattern)
 
 # M2/M3 sync
 PROPIA_FEED_URL=https://propia.com.py/api/feed/terreno
-FEED_SHARED_SECRET=…         # same secret both directions
-SYNC_TOKEN=…                 # cron → /api/sync/import
+FEED_SHARED_SECRET=…             # same value both sites, both directions
 REVALIDATE_TOKEN=…
 
 # M4
-GHL_WEBHOOK_URL=…            # consumed ONLY by lib/crm.ts
+GHL_WEBHOOK_URL=…                # consumed ONLY by lib/crm.ts (unset → ConsoleCrm)
 SHEETS_WEBHOOK_URL=…
 ```
 
-Everything non-minimum self-disables when empty (existing rule, kept).
+Non-minimum vars self-disable when empty (existing rule).
 **Deleted: all `JETENGINE_*` vars.**
 
 ## 11. Audit of existing repo — keep / rewrite / delete
 
-The repo contains a complete, well-built seed-powered frontend (PRs #1–#4).
-This plan keeps most of it and kills the WordPress direction.
-
-**KEEP (as-is):**
-- `app/` routes, `components/`, `tailwind.config.ts`, `docs/DESIGN_HANDOFF.md`,
-  `docs/Terreno.dc.html` — the design and pages are done and on-brand.
-- `lib/types.ts` domain model (add `origin` field), `lib/format.ts`,
-  `lib/slug.ts`, `lib/whatsapp.ts`, `lib/jsonld.ts`, `lib/validation.ts`,
-  `lib/parse-body.ts`, `lib/seed/*` (seed becomes the permanent DB fallback +
-  dev fixture).
-- The data-seam rule and `lib/listings-repo.ts` public API (signatures
-  unchanged).
-- Lead routing rules and resilience behavior in `lib/leads.ts`.
+**KEEP:** `app/` routes and `components/` (design done, on-brand),
+`docs/DESIGN_HANDOFF.md`, `docs/Terreno.dc.html`, `tailwind.config.ts`,
+`lib/format.ts`, `lib/whatsapp.ts`, `lib/jsonld.ts`, `lib/validation.ts`,
+`lib/parse-body.ts`, `lib/seed/*` (becomes DB fallback + fixtures), the
+data-seam rule and `listings-repo.ts` public signatures, lead routing
+rules and resilience behavior.
 
 **REWRITE:**
-- `lib/listings-repo.ts` `fetchSource()` internals — M1: MySQL via Drizzle,
-  seed fallback. Delete the JetEngine pseudo-code comment block.
-- `lib/leads.ts` — M4: extract GHL calls into new `lib/crm.ts`; add
-  `vertical`/`capture_site`/`origin_site` and local `leads`-table persistence.
-- `README.md` — M1: remove all JetEngine/WordPress/"Phase 2" content
-  (§"How the JetEngine swap will work", panel.terreno.com.py, WP Application
-  Passwords, the Phase-2 list); point to this file as the contract.
-- `.github/workflows/ci.yml` — M0: add lint + typecheck + test jobs (today it
-  only builds).
-- `app/api/revalidate/route.ts` — repurpose: caller is our importer, not a WP
+- `lib/listings-repo.ts` internals — M1: Drizzle/MySQL, seed fallback;
+  delete the JetEngine pseudo-code block.
+- `lib/types.ts` — add `origin`, `publicId`; price triple; status enum.
+- `lib/slug.ts` → `lib/urls.ts` — one-file build+parse incl.
+  `listingUrl({slug, publicId})` and `parseListingPublicId` (propia
+  pattern); `/terreno/[slug]` route param handling updated.
+- `lib/leads.ts` — M4: extract GHL into `lib/crm.ts` port; DB-first lead
+  row; payload per §8.
+- `README.md` — M1: purge all JetEngine/WordPress/panel.terreno.com.py
+  content; point here.
+- `.github/workflows/ci.yml` — M0: typecheck + lint + test + build +
+  `npm audit --audit-level=high` (skill's exact job).
+- `app/api/revalidate/route.ts` — caller is our sync script, not a WP
   webhook.
 
-**DELETE:**
-- `JETENGINE_*` block in `.env.example`.
-- Every remaining reference to JetEngine / panel.terreno.com.py / WP
-  Application Passwords (`grep -rn jetengine -i` must return zero after M1).
+**DELETE:** `JETENGINE_*` env block; every JetEngine/WP reference
+(`grep -rni jetengine` returns zero after M1).
 
-**MISSING (added by M0 — day-0 rails the skill demands, absent today):**
-- No ESLint config (`next lint` script exists but no eslint dep/config),
-  no Prettier, no test runner, no tests, no lint/typecheck/test in CI,
-  no `/api/health`, `devDependencies` is empty (build toolchain was moved to
-  `dependencies` for Hostinger — keep that, it was learned the hard way in
-  PR #3 `[VERIFY vs SKILL.md]`).
+**MISSING (M0 adds — skill day-0 items absent today):** ESLint flat
+config (`next lint` currently unconfigurable), Prettier, vitest + first
+pure-logic tests, `docker-compose.yml` (local MySQL 8), audit step in CI,
+`/api/health`, seed CSV + idempotent importer story, SessionStart/no-DB
+verify path for cloud sessions. Keep build toolchain in `dependencies`
+(hard-won Hostinger lesson, PR #3).
 
-## 12. Milestones (sequential, each ends at a STOP gate)
+## 12. Milestones (sequential, STOP gates, no dates)
 
-Each milestone is one PR (or a small stack), CI green, founder reviews at the
-STOP gate before the next begins. No milestone starts early.
+### M0 — Rails + real deploy *(Sonnet 5; Fable 5 reviews the gate)* — PR #1
+ESLint flat config + Prettier + vitest with first pure-logic tests
+(**urls build/parse, price normalization, the normalize.ts port:
+canon/canonPhone/buckets/hashes — these test files ARE the no-DB verify
+path**) + CI per skill + `docker-compose.yml` + `/api/health`. Deploy the
+current seed-powered site to Hostinger as its own Node.js app (git deploy,
+Node 22, Brazil region), attach terreno.com.py + SSL. Delete `JETENGINE_*`.
+**STOP:** CI green; site live on the domain; deploys boring.
 
-### M0 — Rails + real deploy (PR #1 of this plan)
-ESLint (flat config, next preset) + Prettier + Vitest with first real tests
-(listings-repo filtering/facets, lead routing) + CI = lint → typecheck →
-test → build. Add `/api/health`. **Deploy the current seed-powered site to
-Hostinger** as its own Node.js app (hPanel → Git import, branch `main`,
-Node 22.x, minimum-viable env vars), attach terreno.com.py, verify SSR/ISR
-live. Delete `JETENGINE_*` from `.env.example`.
-**STOP gate:** CI green on PR; https://terreno.com.py serves the seed site;
-founder approves.
+### M1 — Schema live + seam swap *(Opus 4.8)*
+`terreno_prod` DB + user; Drizzle schema per §4; `locations` seeded
+(propia's OSM/GeoNames × Tu Lugar approach — or a one-off export of
+propia's locations rows, coordinated); seed-listing importer
+(`source='seed'`, idempotent); `fetchSource()` → DB with seed fallback;
+URL migration to `{slug}-{publicId}`; README rewrite.
+**STOP (propia's 10x rule):** schema reviewed against every UI element and
+page type; production renders from DB; DB kill → seed fallback proven;
+seed re-import = zero changes.
 
-### M1 — MySQL + seam swap
-Create `terreno_prod` DB + user in hPanel. Drizzle schema (§4) — **first
-reconcile field names against propia's `src/db/schema.ts`** — migrations,
-`scripts/import-seed.ts` (idempotent: seed rows get
-`listing_sources.source='seed'`, dedup_key `seed:{id}`). Swap
-`fetchSource()` to DB with seed fallback. Repo tests run against MySQL in CI
-(service container). Rewrite README.
-**STOP gate:** production renders from DB; killing the DB still renders the
-site (fallback proven); seed import re-run = zero changes.
+### M2 — Inbound sync: propia → terreno *(Opus 4.8)*
+Prereq: propia ships migration-note items 1–2 (enum value + feed).
+Verbatim ports of `normalize.ts` + the `upsert.ts` decision tree; feed
+adapter; pause pass; `scripts/sync-import.ts` + 15-min hPanel cron;
+counters in `/api/health`; ISR revalidate on change. Tests: fixture feed
+imported twice → second run all-unchanged; one mutated field → exactly one
+update; dedup-collision fixture → attach, not create.
+**STOP:** a land listing published on propia appears on terreno within
+15 min **in production**; re-syncs create zero duplicates; pausing at
+origin pauses the copy.
 
-### M2 — Inbound sync: propia → terreno
-Prereq: propia ships its feed (see `docs/PROPIA-MIGRATION.md` — hand to a
-propia.node session first). Build `lib/sync/import.ts` + `/api/sync/import`
-+ hPanel cron (15 min). Full dedup semantics of §5, type mapping
-propia `property_type` → terreno `tipo`, ISR revalidate on change, sync
-counters in `/api/health`. Tests: fixture feed → import twice → second run
-all-unchanged; mutate one field → exactly one update.
-**STOP gate:** a land listing published on propia.com.py appears on
-terreno.com.py within 15 min; re-syncs create no duplicates (demonstrated in
-prod, not just tests).
+### M3 — Outbound feed + canonical contract *(Opus 4.8)*
+`/api/feed/listings` (§5.1, loop guard); `lib/urls.ts` canonical builder;
+self-canonicals + sitemap on terreno. Propia lands migration-note items
+3–4; verify both directions end-to-end.
+**STOP:** founder-created terreno listing appears on propia; `curl` shows
+correct canonicals on both sites' detail pages; propia's sitemap has no
+land detail URLs; terreno's has all of them; both Search Console
+properties registered.
 
-### M3 — Outbound feed + canonical/SEO contract
-`/api/feed/listings` (token, `origin='local'` only, §5 shape). Terreno side
-of §7: self-canonicals verified, sitemap = published listings + landings with
-listings. (Propia's importer + canonical/sitemap changes happen in
-propia.node per the migration note — coordinate, then verify end-to-end.)
-**STOP gate:** a founder-created terreno listing appears on propia.com.py;
-`curl` shows correct canonicals on both sites' detail pages; propia sitemap
-contains no land detail URLs, terreno's contains all of them.
+### M4 — CRM boundary + attribution *(Opus 4.8)*
+`lib/crm.ts` port (CrmProvider/GhlProvider/ConsoleCrm); DB-first lead rows;
+payload per §8 with `originSite`; wire real `GHL_WEBHOOK_URL`.
+**STOP:** test lead on a propia-origin listing captured on terreno lands in
+GHL with `vertical='terreno'`, `originSite='propia'`, correct broker
+WhatsApp routing; GHL outage doesn't break the WhatsApp button.
 
-### M4 — CRM boundary + attribution
-Port `lib/crm.ts` from propia's pattern. Leads persist locally, then fan out;
-payload carries `vertical='terreno'`, `capture_site`, `origin_site`,
-`listing_dedup_key`. Wire real `GHL_WEBHOOK_URL`.
-**STOP gate:** test lead on a cross-posted (propia-origin) listing from
-terreno.com.py lands in GHL with `origin_site='propia.com.py'` and correct
-broker WhatsApp routing; a GHL outage does not break the WhatsApp button.
-
-### M5 — Publishing link + es-PY copy audit
-Thin `/publicar` → propia's wizard. Full copy pass: voseo everywhere
-(publicá, vendé, encontrá), land vocabulary audit, WhatsApp CTA wording.
-**STOP gate:** end-to-end demo — landowner publishes on propia → listing on
-both sites → lead captured on terreno → GHL with attribution. Launch.
-
----
-
-*Companion doc: `docs/PROPIA-MIGRATION.md` — the minimal changes propia.node
-needs (feed endpoint, importer source, canonical/sitemap rule) to be handed
-to a propia session before M2.*
+### M5 — Publishing link + es-PY copy audit *(Sonnet 5)*
+Thin `/publicar` → propia wizard; full voseo pass (publicá, vendé,
+encontrá); land-vocabulary audit; WhatsApp CTA wording.
+**STOP → LAUNCH:** end-to-end demo — publish on propia → live on both
+sites → lead on terreno → GHL with attribution.
