@@ -14,7 +14,8 @@ export async function generateStaticParams() {
   // Prerender only tipo×departamento×ciudad combos that have ≥1 listing.
   const all = await getListings();
   const seen = new Set<string>();
-  const params: Array<{ tipo: string; departamento: string; ciudad: string }> = [];
+  const params: Array<{ tipo: string; departamento: string; ciudad: string }> =
+    [];
   for (const l of all) {
     const key = `${l.tipo}|${l.ubicacion.departamento}|${l.ubicacion.ciudad}`;
     if (seen.has(key)) continue;
@@ -28,7 +29,11 @@ export async function generateStaticParams() {
   return params;
 }
 
-async function resolve(tipoSlug: string, deptoSlug: string, ciudadSlug: string) {
+async function resolve(
+  tipoSlug: string,
+  deptoSlug: string,
+  ciudadSlug: string,
+) {
   const tipo = tipoFromSlug(tipoSlug);
   if (!tipo) return null;
   const facets = await getFacets();
@@ -83,7 +88,10 @@ export default async function LandingCiudadPage({
         data={breadcrumbJsonLd([
           { name: 'Inicio', url: SITE.url },
           { name: r.departamento, url: `${SITE.url}/${tipo}/${departamento}` },
-          { name: r.ciudad, url: `${SITE.url}/${tipo}/${departamento}/${ciudad}` },
+          {
+            name: r.ciudad,
+            url: `${SITE.url}/${tipo}/${departamento}/${ciudad}`,
+          },
         ])}
       />
 

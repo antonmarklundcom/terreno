@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import maplibregl, { type Map as MlMap, type LngLatBoundsLike } from 'maplibre-gl';
+import maplibregl, {
+  type Map as MlMap,
+  type LngLatBoundsLike,
+} from 'maplibre-gl';
 import type { Polygon } from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -72,9 +75,7 @@ export default function ListingMap({
 
   const fallbackCenter: [number, number] =
     center ??
-    (markers.length
-      ? [markers[0].lng, markers[0].lat]
-      : [-57.5759, -25.3]); // Gran Asunción
+    (markers.length ? [markers[0].lng, markers[0].lat] : [-57.5759, -25.3]); // Gran Asunción
 
   // Init once.
   useEffect(() => {
@@ -87,7 +88,10 @@ export default function ListingMap({
       attributionControl: { compact: true },
     });
     if (showZoom) {
-      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+      map.addControl(
+        new maplibregl.NavigationControl({ showCompass: false }),
+        'top-right',
+      );
     }
     mapRef.current = map;
 
@@ -141,7 +145,9 @@ export default function ListingMap({
       el.addEventListener('mouseenter', () => onHover?.(m.id));
       el.addEventListener('mouseleave', () => onHover?.(null));
       markerEls.current.set(m.id, el);
-      new maplibregl.Marker({ element: el }).setLngLat([m.lng, m.lat]).addTo(map);
+      new maplibregl.Marker({ element: el })
+        .setLngLat([m.lng, m.lat])
+        .addTo(map);
     });
 
     if (fitToMarkers && markers.length > 1) {

@@ -1,4 +1,4 @@
-import type { Listing, OwnerType, Servicio, Tipo } from '@/lib/types';
+import type { Listing, OwnerType, Servicio } from '@/lib/types';
 import { kebab } from '@/lib/slug';
 
 /**

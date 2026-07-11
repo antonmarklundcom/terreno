@@ -17,10 +17,14 @@ export function ValuationForm({ facets }: { facets: Facets }) {
   const [unidad, setUnidad] = useState<'m2' | 'ha'>('m2');
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle',
+  );
 
   const ciudades = useMemo(
-    () => facets.departamentos.find((d) => d.nombre === departamento)?.ciudades ?? [],
+    () =>
+      facets.departamentos.find((d) => d.nombre === departamento)?.ciudades ??
+      [],
     [facets, departamento],
   );
 
@@ -136,7 +140,11 @@ export function ValuationForm({ facets }: { facets: Facets }) {
         />
       </div>
 
-      <button type="submit" disabled={status === 'sending'} className="btn-primary mt-3.5 w-full">
+      <button
+        type="submit"
+        disabled={status === 'sending'}
+        className="btn-primary mt-3.5 w-full"
+      >
         {status === 'sending' ? 'Enviando…' : 'Quiero mi tasación gratis'}
       </button>
 

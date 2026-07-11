@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,9 +15,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
       - run: npm run build
         env:
-          # Build only needs the minimum-viable public subset.
+          # Build only needs the minimum-viable public subset (ARCHITECTURE §10).
           NEXT_PUBLIC_SITE_URL: https://terreno.com.py
           NEXT_PUBLIC_WHATSAPP: '595981000000'
           NEXT_PUBLIC_BUSINESS_NAME: Terreno
+      # Moderate advisories only (a transitive postcss inside next); high/critical fail the build.
+      - run: npm audit --audit-level=high

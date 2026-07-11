@@ -5,7 +5,12 @@ import { SEED_GUIDES } from '@/lib/seed/guides';
 import { BuyerSearch } from '@/components/buyer-search';
 import { SellerCtaCard } from '@/components/seller-cta-card';
 import { ListingCard } from '@/components/listing-card';
-import { ChevronRight, ShieldCheck, LayersIcon, UsersIcon } from '@/components/icons';
+import {
+  ChevronRight,
+  ShieldCheck,
+  LayersIcon,
+  UsersIcon,
+} from '@/components/icons';
 
 export const metadata: Metadata = {
   title: 'Terrenos en Paraguay, con datos claros',
@@ -34,7 +39,10 @@ const TRUST = [
 
 const SERVICIOS = [
   { titulo: 'Tasación', texto: 'Valor de mercado con datos de la zona.' },
-  { titulo: 'Revisión de título', texto: 'Verificación legal antes de comprar.' },
+  {
+    titulo: 'Revisión de título',
+    texto: 'Verificación legal antes de comprar.',
+  },
   { titulo: 'Agrimensura', texto: 'Medición de límites y frente.' },
   { titulo: 'Financiación', texto: 'Comparar contado y cuotas.' },
 ];
@@ -91,7 +99,9 @@ export default async function HomePage() {
               </div>
               <div>
                 <div className="text-[14px] font-semibold">{titulo}</div>
-                <div className="text-[13px] leading-snug text-ink-muted">{texto}</div>
+                <div className="text-[13px] leading-snug text-ink-muted">
+                  {texto}
+                </div>
               </div>
             </div>
           ))}
@@ -104,7 +114,10 @@ export default async function HomePage() {
         <section>
           <div className="mb-3.5 flex items-baseline justify-between">
             <h2 className="section-h">Guías para invertir</h2>
-            <Link href="/guias" className="text-[13px] font-semibold text-brand">
+            <Link
+              href="/guias"
+              className="text-[13px] font-semibold text-brand"
+            >
               Ver todas
             </Link>
           </div>
@@ -117,7 +130,9 @@ export default async function HomePage() {
                   i > 0 ? 'border-t border-line-soft' : ''
                 }`}
               >
-                <span className="text-[14px] font-medium leading-snug">{g.titulo}</span>
+                <span className="text-[14px] font-medium leading-snug">
+                  {g.titulo}
+                </span>
                 <span className="text-ink-faintest">
                   <ChevronRight size={16} />
                 </span>
@@ -130,7 +145,10 @@ export default async function HomePage() {
         <section>
           <div className="mb-3.5 flex items-baseline justify-between">
             <h2 className="section-h">Servicios</h2>
-            <Link href="/servicios" className="text-[13px] font-semibold text-brand">
+            <Link
+              href="/servicios"
+              className="text-[13px] font-semibold text-brand"
+            >
               Ver todos
             </Link>
           </div>

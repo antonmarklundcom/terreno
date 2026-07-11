@@ -36,7 +36,11 @@ export function DestacadoBadge() {
   );
 }
 
-export function FinanciacionTag({ financiacion }: { financiacion: Financiacion }) {
+export function FinanciacionTag({
+  financiacion,
+}: {
+  financiacion: Financiacion;
+}) {
   return (
     <span className="rounded-tile border border-brand/20 bg-brand-tint px-2.5 py-1 text-[11.5px] font-semibold text-brand">
       {financiacion === 'cuotas' ? 'Cuotas' : 'Contado'}

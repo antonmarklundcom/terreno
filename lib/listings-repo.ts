@@ -146,7 +146,10 @@ export async function getFacets(): Promise<Facets> {
   const all = await fetchSource();
 
   type CiudadAcc = { count: number; barrios: Map<string, number> };
-  const deptos = new Map<string, { count: number; ciudades: Map<string, CiudadAcc> }>();
+  const deptos = new Map<
+    string,
+    { count: number; ciudades: Map<string, CiudadAcc> }
+  >();
   const tipos = new Map<Tipo, number>();
   const servicios = new Map<Servicio, number>();
 

@@ -24,7 +24,4 @@ export const SERVER_ENV = {
   ghlWebhookUrl: clean(process.env.GHL_WEBHOOK_URL),
   sheetsWebhookUrl: clean(process.env.SHEETS_WEBHOOK_URL),
   revalidateToken: clean(process.env.REVALIDATE_TOKEN),
-  jetengineApiBase: clean(process.env.JETENGINE_API_BASE),
-  jetengineUser: clean(process.env.JETENGINE_APP_USER),
-  jetenginePassword: clean(process.env.JETENGINE_APP_PASSWORD),
 } as const;

@@ -2,7 +2,10 @@ import Link from 'next/link';
 import { Wordmark } from './wordmark';
 import { SITE } from '@/lib/config';
 
-const COLS: Array<{ title: string; links: Array<{ href: string; label: string }> }> = [
+const COLS: Array<{
+  title: string;
+  links: Array<{ href: string; label: string }>;
+}> = [
   {
     title: 'Comprar',
     links: [

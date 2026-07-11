@@ -11,7 +11,9 @@ export const metadata: Metadata = {
 export default function SobreNosotrosPage() {
   return (
     <div className="container-page max-w-prose py-8 sm:py-12">
-      <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px]">Sobre nosotros</h1>
+      <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px]">
+        Sobre nosotros
+      </h1>
       <div className="mt-4 space-y-4 text-[15.5px] leading-[1.62] text-ink-prose">
         <p>
           terreno.com.py nació de una idea simple: en Paraguay la tierra se

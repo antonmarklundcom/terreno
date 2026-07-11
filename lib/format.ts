@@ -120,12 +120,24 @@ export function precioPorUnidad(listing: Listing): {
 
 /** A listing is "Destacado" only while featured_until is in the future. */
 export function isDestacado(listing: Listing, now = Date.now()): boolean {
-  return typeof listing.featured_until === 'number' && listing.featured_until > now;
+  return (
+    typeof listing.featured_until === 'number' && listing.featured_until > now
+  );
 }
 
 const MESES = [
-  'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-  'jul', 'ago', 'sep', 'oct', 'nov', 'dic',
+  'ene',
+  'feb',
+  'mar',
+  'abr',
+  'may',
+  'jun',
+  'jul',
+  'ago',
+  'sep',
+  'oct',
+  'nov',
+  'dic',
 ];
 
 export function formatFecha(ts: number): string {

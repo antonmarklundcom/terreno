@@ -23,9 +23,7 @@ export function DetailMap({
   label: string;
   className?: string;
 }) {
-  const markers: MapMarker[] = polygon
-    ? []
-    : [{ id: 'this', lat, lng, label }];
+  const markers: MapMarker[] = polygon ? [] : [{ id: 'this', lat, lng, label }];
   return (
     <ListingMap
       markers={markers}
