@@ -18,7 +18,9 @@ import {
 function listing(over: Partial<Listing> = {}): Listing {
   return {
     id: 't-001',
+    public_id: 'ab12cd34ef',
     slug: 'lote-x-t-001',
+    origin: 'local',
     owner_type: 'broker',
     owner: { nombre: 'Corredor', telefono_wa: '595971111111' },
     tipo: 'lote_urbano',

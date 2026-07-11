@@ -9,6 +9,7 @@ import {
   tipoLabel,
 } from '@/lib/format';
 import { SITE } from '@/lib/config';
+import { listingPath } from '@/lib/listing-url';
 import { MapThumb } from './map-thumb';
 import {
   TipoPill,
@@ -44,7 +45,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
 
   return (
     <Link
-      href={`/terreno/${listing.slug}`}
+      href={listingPath(listing)}
       className="card group block overflow-hidden transition-shadow hover:shadow-raised"
     >
       <div className="relative h-[158px] bg-map-sand">
@@ -109,7 +110,7 @@ export function ListingRow({ listing }: { listing: Listing }) {
 
   return (
     <Link
-      href={`/terreno/${listing.slug}`}
+      href={listingPath(listing)}
       className="card flex overflow-hidden transition-shadow hover:shadow-raised"
     >
       <div className="relative w-[200px] flex-none bg-map-sand">

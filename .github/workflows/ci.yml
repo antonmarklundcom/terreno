@@ -8,6 +8,19 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: terreno_test
+          MYSQL_USER: terreno
+          MYSQL_PASSWORD: terreno
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,12 +30,21 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      # Pure/repo suite — the no-DB verify path (DATABASE_URL intentionally unset
+      # here, so the seam reads the seed deterministically).
       - run: npm test
+      # DB-backed suite — schema + idempotent import against real MySQL (§12).
+      - run: npm run db:migrate
+        env:
+          DATABASE_URL: mysql://terreno:terreno@127.0.0.1:3306/terreno_test
+      - run: npm run test:db
+        env:
+          DATABASE_URL: mysql://terreno:terreno@127.0.0.1:3306/terreno_test
       - run: npm run build
         env:
           # Build only needs the minimum-viable public subset (ARCHITECTURE §10).
           NEXT_PUBLIC_SITE_URL: https://terreno.com.py
           NEXT_PUBLIC_WHATSAPP: '595981000000'
           NEXT_PUBLIC_BUSINESS_NAME: Terreno
-      # Moderate advisories only (a transitive postcss inside next); high/critical fail the build.
+      # Moderate advisories only (a transitive postcss inside next); high/critical fail.
       - run: npm audit --audit-level=high

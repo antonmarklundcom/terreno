@@ -1,9 +1,9 @@
 /**
  * Domain type model for terreno.com.py.
  *
- * These types are the contract for the data seam. The `Listing` shape is
- * designed to mirror the future JetEngine REST response so that swapping the
- * data source is a single-file change inside `lib/listings-repo.ts`.
+ * These types are the contract for the data seam. The `Listing` shape is the
+ * app-facing domain model; DB rows map to it inside `lib/listings-repo.ts`
+ * (via `lib/db/map.ts`), so the source can change without touching the UI.
  *
  * No `any` allowed in this file — it is the canonical domain model.
  */
@@ -68,7 +68,11 @@ export interface LoteamientoAggregate {
 
 export interface Listing {
   id: string;
+  /** Stable 10-char identity in the URL ({slug}-{public_id}); never changes. */
+  public_id: string;
   slug: string;
+  /** Which site the listing was published on (feed loop-guard, §3). */
+  origin: 'local' | 'propia';
   owner_type: OwnerType;
   owner: ListingOwner;
   tipo: Tipo;

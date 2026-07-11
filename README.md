@@ -29,8 +29,8 @@ secondary**.
 - **Next.js 15** (App Router) + **TypeScript** (strict) + **Tailwind CSS**
 - **MapLibre GL JS** + free Carto raster tiles (no API key, no billing)
 - **zod** on every API input
-- **MySQL + Drizzle ORM** — terreno's own database (lands in M1; today the site
-  runs on the checked-in seed)
+- **MySQL + Drizzle ORM** — terreno's own database; the checked-in seed is the
+  permanent fallback (DB unreachable → the site still renders)
 - Node **22.x** (LTS), hosted on Hostinger Cloud (own Node.js app)
 
 ## Getting started
@@ -38,7 +38,7 @@ secondary**.
 ```bash
 npm install
 cp .env.example .env.local   # fill the MINIMUM VIABLE subset (see below)
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3000 (runs on the seed, no DB)
 npm run build && npm start   # production build
 ```
 
@@ -47,10 +47,28 @@ Verification rails (run in CI on every push/PR):
 ```bash
 npm run lint         # ESLint flat config (next preset + prettier)
 npm run typecheck    # strict TS, no emit
-npm test             # vitest — pure-logic unit tests (no DB needed)
+npm test             # vitest — pure-logic + repo suite over the seed (no DB)
 npm run build        # next build
 npm run format       # prettier --write (format:check verifies)
 ```
+
+### Database (own MySQL, Drizzle)
+
+The site runs with **zero DB** on the seed. Point it at MySQL by setting
+`DATABASE_URL`; `fetchSource()` then reads the DB and falls back to the seed on
+any failure (§4).
+
+```bash
+export DATABASE_URL="mysql://terreno:terreno@127.0.0.1:3306/terreno_dev"
+npm run db:migrate       # apply drizzle/ migrations
+npm run db:import-seed    # idempotent: load the seed into the DB (re-run = no-op)
+npm run db:studio         # browse/edit rows (Drizzle Studio — founder intake)
+npm run test:db           # DB-backed idempotency suite (needs DATABASE_URL)
+```
+
+Schema lives in [`lib/db/schema.ts`](lib/db/schema.ts); migrations in `drizzle/`
+(generate with `npm run db:generate`). Field names align with propia's schema
+so the future cross-posting feed maps mechanically (ARCHITECTURE.md §4, §5).
 
 ## Routes
 
@@ -58,7 +76,7 @@ npm run format       # prettier --write (format:check verifies)
 | --- | --- | --- |
 | `/` | SSG | Home (dual-path browse + sell) |
 | `/buscar` | SSR (dynamic) | Search results — split map + list, URL-driven filters |
-| `/terreno/[slug]` | SSG + ISR | Listing detail (map-first) |
+| `/terreno/{slug}-{publicId}` | SSG + ISR | Listing detail (map-first); identity is the trailing 10-char `public_id` |
 | `/[tipo]/[departamento]` | SSG + ISR | Programmatic SEO landing (e.g. `/lotes/central`) |
 | `/[tipo]/[departamento]/[ciudad]` | SSG + ISR | e.g. `/lotes/central/luque` |
 | `/vender` | SSG + ISR | Seller / valuation funnel |
@@ -81,19 +99,24 @@ with **zero** matching listings are `noindex`.
 page and every API route reads listings only through it:
 
 ```ts
-getListings(filters?)        // filtered list
-getListingsResult(filters?)  // { data, total, facets } — the API contract
-getListingBySlug(slug)
+getListings(filters?)          // filtered list
+getListingsResult(filters?)    // { data, total, facets } — the API contract
+getListingByPublicId(publicId) // detail-page identity resolver
+getListingBySlug(slug)         // cosmetic-slug lookup / back-compat
 getFeaturedListings(limit?)
-getFacets()                  // departamentos → ciudades → barrios cascade + counts
+getFacets()                    // departamentos → ciudades → barrios cascade + counts
+getSourceStatus()              // which source served (db | seed) — for /api/health
 ```
 
-- **Today** the repo reads from `lib/seed/listings.ts` (a typed seed array).
-  Nothing else imports the seed — enforced and verifiable:
+- **The source is MySQL, the seed is the fallback.** `fetchSource()` reads
+  published rows from the DB when `DATABASE_URL` is set and falls back to
+  `lib/seed/listings.ts` on any failure — so the site always renders (§4).
+  DB row → `Listing` mapping lives inside the seam (`lib/db/map.ts`); nothing
+  outside the repo module imports the seed or the db client:
 
   ```bash
   # returns nothing but the repo itself:
-  grep -rn "seed/listings" app components lib | grep -v "lib/listings-repo.ts"
+  grep -rn "seed/listings\|db/client" app components lib | grep -v "lib/listings-repo.ts"
   ```
 
 - **All listing data is fetched server-side** (Server Components / route
@@ -101,10 +124,9 @@ getFacets()                  // departamentos → ciudades → barrios cascade +
   they receive data as props. There is no client-side `fetch()` of listing data
   anywhere, so crawlers always get fully-rendered HTML.
 
-- **M1 swaps the source, not the shape.** `fetchSource()` becomes a MySQL
-  read through Drizzle, with the seed kept as a **permanent fallback** (DB
-  unreachable → the site still renders). That is a single-file change inside
-  `lib/listings-repo.ts` — never a frontend rebuild. See ARCHITECTURE.md §4.
+- **Listing URLs are `{slug}-{publicId}`.** The slug is cosmetic/SEO; the
+  trailing 10-char `public_id` is the stable identity the detail route resolves
+  by. Build/parse live in one file, [`lib/listing-url.ts`](lib/listing-url.ts).
 
 ### Editing seed data
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getListings } from '@/lib/listings-repo';
+import { getSourceStatus } from '@/lib/listings-repo';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,32 +10,34 @@ const STARTED_AT = Date.now();
  * `curl https://terreno.com.py/api/health | jq`. This is the one endpoint the
  * founder hits to know the box is alive.
  *
- * M0: reports process uptime and the live listing count served through the
- * repo seam (proves the data path renders). The `source` is `seed` until M1
- * swaps `fetchSource()` to MySQL. The `sync` block is a placeholder until M2
- * wires the importer counters + last-sync age (ARCHITECTURE §5, §12).
+ * Reports which source actually served: `db` when MySQL is serving, or `seed`
+ * with `fallback: true` when the DB is enabled but unreachable (the site still
+ * renders — §4). HTTP is 200 whenever listings render; `degraded` flags a
+ * DB fallback so monitoring notices without paging (the site is still up).
+ * The `sync` block is a placeholder until M2 wires importer counters (§5).
  */
 export async function GET() {
   const now = Date.now();
-  let listings = 0;
-  let dataOk = true;
 
+  let data;
   try {
-    listings = (await getListings()).length;
+    data = await getSourceStatus();
   } catch {
-    dataOk = false;
+    data = {
+      source: 'seed' as const,
+      db_enabled: true,
+      fallback: true,
+      listings: 0,
+    };
   }
 
+  const degraded = data.fallback || data.listings === 0;
+
   const body = {
-    status: dataOk ? ('ok' as const) : ('degraded' as const),
+    status: degraded ? ('degraded' as const) : ('ok' as const),
     time: new Date(now).toISOString(),
     uptime_s: Math.round((now - STARTED_AT) / 1000),
-    data: {
-      // M1 flips this to 'db' (with 'seed' as the fallback marker).
-      source: 'seed' as const,
-      ok: dataOk,
-      listings,
-    },
+    data,
     // M2 fills these in from the importer run counters.
     sync: {
       enabled: false,
@@ -46,7 +48,8 @@ export async function GET() {
   };
 
   return NextResponse.json(body, {
-    status: dataOk ? 200 : 503,
+    // Site renders (via DB or seed) → 200. Only a total data failure is 503.
+    status: data.listings > 0 ? 200 : 503,
     headers: { 'cache-control': 'no-store' },
   });
 }

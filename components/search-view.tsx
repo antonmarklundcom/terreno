@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { Facets, Listing } from '@/lib/types';
 import { formatUsdCompact } from '@/lib/format';
+import { listingPath } from '@/lib/listing-url';
 import { ListingCard, ListingRow } from './listing-card';
 import { SearchFilters } from './search-filters';
 import { SlidersIcon, LayersIcon } from './icons';
@@ -41,7 +42,7 @@ export function SearchView({
             ? l.loteamiento.precio_desde
             : l.precio.monto,
         ),
-        href: `/terreno/${l.slug}`,
+        href: listingPath(l),
       })),
     [listings],
   );
