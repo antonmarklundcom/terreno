@@ -1,13 +1,14 @@
 import type { Listing, OwnerType, Servicio } from '@/lib/types';
 import { kebab } from '@/lib/slug';
+import { deterministicPublicId } from '@/lib/public-id';
 
 /**
- * Versioned seed data — the Build 1 source of truth for listings.
+ * Versioned seed data — the permanent DB fallback and the dev/import fixture.
  *
  * IMPORTANT: nothing outside `lib/listings-repo.ts` may import this file.
- * The repo reads it and (later) falls back to it when the JetEngine backend is
- * unreachable. Edit listings here; keep lat/lng realistic so map pins land in
- * the right city.
+ * The repo reads it when the MySQL source is unreachable (§4) and
+ * `scripts/import-seed.ts` loads it into the DB. Edit listings here; keep
+ * lat/lng realistic so map pins land in the right city.
  */
 
 const PLACEHOLDER = '/placeholder-lote.svg';
@@ -18,7 +19,10 @@ const DAY = 86_400_000;
 const ago = (days: number) => BASE - days * DAY;
 const future = (days: number) => BASE + days * DAY;
 
-type Seed = Omit<Listing, 'id' | 'slug' | 'status' | 'images'> & {
+type Seed = Omit<
+  Listing,
+  'id' | 'public_id' | 'slug' | 'origin' | 'status' | 'images'
+> & {
   id?: string;
   slug?: string;
 };
@@ -31,7 +35,10 @@ function build(seed: Seed): Listing {
   return {
     ...seed,
     id,
+    // Deterministic so a seed re-import is always a no-op (§12 gate).
+    public_id: deterministicPublicId(id),
     slug,
+    origin: 'local',
     images: [PLACEHOLDER],
     status: 'published',
   };

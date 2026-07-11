@@ -11,7 +11,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --exclude 'lib/import/seed-import.test.ts'",
+    "test:db": "vitest run lib/import/seed-import.test.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:import-seed": "tsx scripts/import-seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@types/geojson": "^7946.0.15",
@@ -19,7 +24,9 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
+    "drizzle-orm": "^0.45.2",
     "maplibre-gl": "^4.7.1",
+    "mysql2": "^3.22.6",
     "next": "^15.5.4",
     "postcss": "^8.5.1",
     "react": "19.0.0",
@@ -30,10 +37,12 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.20",
     "eslint-config-prettier": "^9.1.2",
     "prettier": "^3.9.5",
+    "tsx": "^4.23.0",
     "vitest": "^3.2.7"
   }
 }

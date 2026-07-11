@@ -1,11 +1,12 @@
 import type { GuideArticle, Listing } from './types';
 import { SITE } from './config';
 import { tipoLabel, formatSuperficie } from './format';
+import { listingPath } from './listing-url';
 
 /** JSON-LD builders for SEO structured data. */
 
 export function listingJsonLd(listing: Listing) {
-  const url = `${SITE.url}/terreno/${listing.slug}`;
+  const url = `${SITE.url}${listingPath(listing)}`;
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',

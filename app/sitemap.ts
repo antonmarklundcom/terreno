@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getFacets, getListings } from '@/lib/listings-repo';
 import { SEED_GUIDES } from '@/lib/seed/guides';
 import { tipoToSlug, kebab } from '@/lib/slug';
+import { listingPath } from '@/lib/listing-url';
 import { SITE } from '@/lib/config';
 
 export const revalidate = 3600;
@@ -28,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const listingRoutes: MetadataRoute.Sitemap = listings.map((l) => ({
-    url: `${base}/terreno/${l.slug}`,
+    url: `${base}${listingPath(l)}`,
     lastModified: new Date(l.updated_at),
     changeFrequency: 'weekly',
     priority: 0.8,

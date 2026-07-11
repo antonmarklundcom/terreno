@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm';
 import type {
   Facets,
   Listing,
@@ -8,38 +9,84 @@ import type {
 } from './types';
 import { SEED_LISTINGS } from './seed/listings';
 import { USD_TO_PYG, isDestacado } from './format';
+import { DB_ENABLED, getDb } from './db/client';
+import { listings as listingsTable, owners as ownersTable } from './db/schema';
+import { rowToListing } from './db/map';
 
 /**
  * THE SEAM. This is the SOLE data-access point for listings. Every page and
  * every API route reads listings only through this module — nothing else may
- * import `lib/seed/*`.
+ * import `lib/seed/*` or the db client.
  *
- * Build 1 reads from the typed seed array. The function signatures and the
- * `Listing` shape mirror the future JetEngine REST response, so swapping the
- * data source is a single-file change here: implement `fetchSource()` against
- * JetEngine and keep the seed as a permanent fallback (if the backend is
- * unreachable, the site still renders).
+ * `fetchSource()` reads published listings from terreno's own MySQL DB via
+ * Drizzle when DATABASE_URL is set, and falls back to the checked-in seed on
+ * ANY failure (DB unreachable, query error) or when the DB is disabled — so
+ * the site always renders (§4). The seed is also the dev fixture and what
+ * `scripts/import-seed.ts` loads into the DB.
  */
 
 const DEFAULT_PER_PAGE = 24;
 
 // ---------------------------------------------------------------------------
 // Source layer — the only place that knows where raw data comes from.
-// Phase 2: try JetEngine here, fall back to seed on any error.
 // ---------------------------------------------------------------------------
+async function fetchFromDb(): Promise<Listing[]> {
+  const db = getDb();
+  const rows = await db
+    .select({ listing: listingsTable, owner: ownersTable })
+    .from(listingsTable)
+    .leftJoin(ownersTable, eq(listingsTable.ownerId, ownersTable.id))
+    .where(eq(listingsTable.status, 'published'));
+  return rows.map((r) => rowToListing(r.listing, r.owner));
+}
+
 async function fetchSource(): Promise<Listing[]> {
-  // Phase 2 (pseudo, intentionally not built in Build 1):
-  //
-  //   const base = SERVER_ENV.jetengineApiBase;
-  //   if (base) {
-  //     try {
-  //       const res = await fetch(`${base}/listings`, { next: { revalidate: 300 } });
-  //       if (res.ok) return mapJetEngine(await res.json());
-  //     } catch { /* fall through to seed */ }
-  //   }
-  //
-  // Until then — and forever as a fallback — we serve the seed.
+  if (DB_ENABLED) {
+    try {
+      return await fetchFromDb();
+    } catch (err) {
+      // Permanent fallback: a DB outage must never take the site down (§4).
+      console.error('[listings-repo] DB read failed, serving seed:', err);
+    }
+  }
   return SEED_LISTINGS;
+}
+
+/**
+ * Which source actually served, for `/api/health`. Distinguishes DB-serving
+ * from a seed fallback (DB enabled but unreachable) so the founder can see a
+ * degraded DB even while the site keeps rendering.
+ */
+export async function getSourceStatus(): Promise<{
+  source: 'db' | 'seed';
+  db_enabled: boolean;
+  fallback: boolean;
+  listings: number;
+}> {
+  if (DB_ENABLED) {
+    try {
+      const rows = await fetchFromDb();
+      return {
+        source: 'db',
+        db_enabled: true,
+        fallback: false,
+        listings: rows.length,
+      };
+    } catch {
+      return {
+        source: 'seed',
+        db_enabled: true,
+        fallback: true,
+        listings: SEED_LISTINGS.length,
+      };
+    }
+  }
+  return {
+    source: 'seed',
+    db_enabled: false,
+    fallback: false,
+    listings: SEED_LISTINGS.length,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -119,6 +166,18 @@ export async function getListingBySlug(slug: string): Promise<Listing | null> {
   return all.find((l) => l.slug === slug) ?? null;
 }
 
+/**
+ * Resolve by the stable public_id — the identity carried in the URL
+ * ({slug}-{public_id}). This is what the detail route uses; the slug is
+ * cosmetic and may collide, public_id never does.
+ */
+export async function getListingByPublicId(
+  publicId: string,
+): Promise<Listing | null> {
+  const all = await fetchSource();
+  return all.find((l) => l.public_id === publicId) ?? null;
+}
+
 export async function getFeaturedListings(limit = 8): Promise<Listing[]> {
   const now = Date.now();
   const all = await fetchSource();
@@ -139,6 +198,12 @@ export async function getFeaturedListings(limit = 8): Promise<Listing[]> {
 export async function getAllSlugs(): Promise<string[]> {
   const all = await fetchSource();
   return all.map((l) => l.slug);
+}
+
+/** Route-param values ({slug}-{public_id}) for generateStaticParams. */
+export async function getAllListingParams(): Promise<string[]> {
+  const all = await fetchSource();
+  return all.map((l) => `${l.slug}-${l.public_id}`);
 }
 
 /** Departamentos → ciudades → barrios cascade, plus tipo & servicio counts. */

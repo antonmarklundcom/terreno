@@ -1,5 +1,6 @@
 import type { Listing } from './types';
 import { SITE } from './config';
+import { listingPath } from './listing-url';
 
 /**
  * wa.me deep-link helpers. Routing by owner_type is the critical rule:
@@ -25,7 +26,7 @@ export function listingContactNumber(listing: Listing): string {
 }
 
 export function listingWaLink(listing: Listing): string {
-  const ref = `${SITE.url}/terreno/${listing.slug}`;
+  const ref = `${SITE.url}${listingPath(listing)}`;
   const msg =
     listing.owner_type === 'broker'
       ? `Hola, vi "${listing.titulo}" en ${SITE.name} y quiero más información. ${ref}`

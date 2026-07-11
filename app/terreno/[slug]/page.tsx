@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAllSlugs, getListingBySlug } from '@/lib/listings-repo';
+import {
+  getAllListingParams,
+  getListingByPublicId,
+  getListingBySlug,
+} from '@/lib/listings-repo';
+import { listingPath, publicIdFromParam } from '@/lib/listing-url';
+import type { Listing } from '@/lib/types';
 import {
   formatUsd,
   formatGs,
@@ -43,8 +49,22 @@ const ALL_SERVICIOS: Servicio[] = [
 ];
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const params = await getAllListingParams();
+  return params.map((slug) => ({ slug }));
+}
+
+/**
+ * Resolve a detail route param ({slug}-{public_id}) to a listing. Identity is
+ * the trailing public_id; we fall back to a slug lookup for any legacy param
+ * shape without one.
+ */
+async function resolveListing(param: string): Promise<Listing | null> {
+  const publicId = publicIdFromParam(param);
+  if (publicId) {
+    const byId = await getListingByPublicId(publicId);
+    if (byId) return byId;
+  }
+  return getListingBySlug(param);
 }
 
 export async function generateMetadata({
@@ -53,7 +73,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const listing = await getListingBySlug(slug);
+  const listing = await resolveListing(slug);
   if (!listing) return { title: 'Terreno no encontrado' };
   const per = precioPorUnidad(listing);
   const title = `${listing.titulo} — ${formatUsd(listing.precio.monto)}`;
@@ -61,7 +81,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `/terreno/${listing.slug}` },
+    alternates: { canonical: listingPath(listing) },
     openGraph: { title, description, images: [listing.images[0]] },
   };
 }
@@ -81,7 +101,7 @@ export default async function ListingDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const listing = await getListingBySlug(slug);
+  const listing = await resolveListing(slug);
   if (!listing) notFound();
 
   const per = precioPorUnidad(listing);
@@ -103,7 +123,7 @@ export default async function ListingDetailPage({
         data={breadcrumbJsonLd([
           { name: 'Inicio', url: SITE.url },
           { name: 'Buscar', url: `${SITE.url}/buscar` },
-          { name: listing.titulo, url: `${SITE.url}/terreno/${listing.slug}` },
+          { name: listing.titulo, url: `${SITE.url}${listingPath(listing)}` },
         ])}
       />
 

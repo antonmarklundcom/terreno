@@ -1,0 +1,684 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "a28066b7-bbab-4a8d-9b62-6ec020480033",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "leads": {
+      "name": "leads",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "tipo_lead": {
+          "name": "tipo_lead",
+          "type": "enum('listing_contact','valuation','service')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vertical": {
+          "name": "vertical",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'terreno'"
+        },
+        "capture_site": {
+          "name": "capture_site",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "origin_site": {
+          "name": "origin_site",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "listing_dedup_key": {
+          "name": "listing_dedup_key",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contacto": {
+          "name": "contacto",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payload": {
+          "name": "payload",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_page": {
+          "name": "source_page",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "crm_status": {
+          "name": "crm_status",
+          "type": "enum('pending','sent','failed')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_listing": {
+          "name": "idx_listing",
+          "columns": [
+            "listing_id"
+          ],
+          "isUnique": false
+        },
+        "idx_crm": {
+          "name": "idx_crm",
+          "columns": [
+            "crm_status",
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "leads_id": {
+          "name": "leads_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "listing_sources": {
+      "name": "listing_sources",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "enum('seed','admin','propia')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_id": {
+          "name": "source_id",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dedup_key": {
+          "name": "dedup_key",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content_hash": {
+          "name": "content_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "first_seen_at": {
+          "name": "first_seen_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_changed_at": {
+          "name": "last_changed_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_dedup": {
+          "name": "uq_dedup",
+          "columns": [
+            "dedup_key"
+          ],
+          "isUnique": true
+        },
+        "idx_listing": {
+          "name": "idx_listing",
+          "columns": [
+            "listing_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "listing_sources_id": {
+          "name": "listing_sources_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "listings": {
+      "name": "listings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "public_id": {
+          "name": "public_id",
+          "type": "char(10)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(180)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "origin": {
+          "name": "origin",
+          "type": "enum('local','propia')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'local'"
+        },
+        "owner_type": {
+          "name": "owner_type",
+          "type": "enum('broker','casa_propia')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "owner_id": {
+          "name": "owner_id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "enum('lote_urbano','terreno_comercial','campo','quinta','loteamiento')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "varchar(180)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "location_id": {
+          "name": "location_id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "departamento": {
+          "name": "departamento",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ciudad": {
+          "name": "ciudad",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "barrio": {
+          "name": "barrio",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "decimal(9,6)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "decimal(9,6)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "polygon": {
+          "name": "polygon",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "superficie_m2": {
+          "name": "superficie_m2",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "precio_monto": {
+          "name": "precio_monto",
+          "type": "decimal(14,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "precio_moneda": {
+          "name": "precio_moneda",
+          "type": "enum('USD','PYG')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price_usd": {
+          "name": "price_usd",
+          "type": "decimal(12,2)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "frente_m": {
+          "name": "frente_m",
+          "type": "decimal(8,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fondo_m": {
+          "name": "fondo_m",
+          "type": "decimal(8,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "esquina": {
+          "name": "esquina",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "servicios": {
+          "name": "servicios",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "estado_titulo": {
+          "name": "estado_titulo",
+          "type": "enum('con_titulo','en_proceso')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "financiacion": {
+          "name": "financiacion",
+          "type": "enum('contado','cuotas')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "loteamiento": {
+          "name": "loteamiento",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "images": {
+          "name": "images",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "featured_until": {
+          "name": "featured_until",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('published','paused','sold')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'published'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_search": {
+          "name": "idx_search",
+          "columns": [
+            "status",
+            "tipo",
+            "location_id",
+            "price_usd"
+          ],
+          "isUnique": false
+        },
+        "idx_geo": {
+          "name": "idx_geo",
+          "columns": [
+            "status",
+            "lat",
+            "lng"
+          ],
+          "isUnique": false
+        },
+        "idx_fresh": {
+          "name": "idx_fresh",
+          "columns": [
+            "status",
+            "updated_at"
+          ],
+          "isUnique": false
+        },
+        "idx_slug": {
+          "name": "idx_slug",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": false
+        },
+        "idx_owner": {
+          "name": "idx_owner",
+          "columns": [
+            "owner_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "listings_id": {
+          "name": "listings_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "listings_public_id_unique": {
+          "name": "listings_public_id_unique",
+          "columns": [
+            "public_id"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "locations": {
+      "name": "locations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "level": {
+          "name": "level",
+          "type": "enum('pais','departamento','ciudad','barrio')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(140)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "full_slug": {
+          "name": "full_slug",
+          "type": "varchar(300)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "decimal(9,6)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "decimal(9,6)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "listing_counts": {
+          "name": "listing_counts",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_parent": {
+          "name": "idx_parent",
+          "columns": [
+            "parent_id",
+            "level"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "locations_id": {
+          "name": "locations_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "locations_full_slug_unique": {
+          "name": "locations_full_slug_unique",
+          "columns": [
+            "full_slug"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "owners": {
+      "name": "owners",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint unsigned",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(140)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "telefono_wa": {
+          "name": "telefono_wa",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "inmobiliaria": {
+          "name": "inmobiliaria",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "enum('broker','casa_propia')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "owners_id": {
+          "name": "owners_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
