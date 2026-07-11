@@ -39,7 +39,10 @@ export default async function VenderPage() {
   return (
     <div>
       {/* Hero — intro + trust on the left, form card on the right at lg+. */}
-      <section id="top" className="relative overflow-hidden bg-brand-dark text-white">
+      <section
+        id="top"
+        className="relative overflow-hidden bg-brand-dark text-white"
+      >
         <ParcelMotif opacity={0.4} />
         <div className="container-page relative py-10 lg:py-16">
           <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
@@ -52,8 +55,8 @@ export default async function VenderPage() {
                 Lo valuamos, lo publicamos y lo vendemos por vos.
               </h1>
               <p className="mt-2.5 max-w-md text-[14.5px] leading-relaxed text-[#bcd6c5] sm:text-[15.5px]">
-                Tasación gratis con datos reales de tu zona. Vos sólo pagás comisión
-                cuando se vende.
+                Tasación gratis con datos reales de tu zona. Vos sólo pagás
+                comisión cuando se vende.
               </p>
               {/* Trust stats — alongside the intro on the dark band. */}
               <div className="mt-7 grid grid-cols-3 gap-2.5 lg:max-w-md">
@@ -62,7 +65,9 @@ export default async function VenderPage() {
                     key={s.l}
                     className="rounded-card border border-white/15 bg-white/5 p-3.5 text-center"
                   >
-                    <div className="tnum text-[19px] font-bold text-white">{s.n}</div>
+                    <div className="tnum text-[19px] font-bold text-white">
+                      {s.n}
+                    </div>
                     <div className="mt-0.5 text-[11.5px] leading-tight text-[#bcd6c5]">
                       {s.l}
                     </div>
@@ -82,7 +87,9 @@ export default async function VenderPage() {
       <div className="container-page max-w-3xl py-12 lg:py-16">
         {/* How it works */}
         <section>
-          <h2 className="mb-4 text-[18px] font-bold tracking-h2 lg:text-[22px]">Cómo funciona</h2>
+          <h2 className="mb-4 text-[18px] font-bold tracking-h2 lg:text-[22px]">
+            Cómo funciona
+          </h2>
           <ol className="flex flex-col">
             {STEPS.map((step, i) => (
               <li key={step.t} className="flex gap-3.5">
@@ -90,7 +97,9 @@ export default async function VenderPage() {
                   <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-brand text-[14px] font-bold text-white">
                     {i + 1}
                   </div>
-                  {i < STEPS.length - 1 && <div className="w-0.5 flex-1 bg-trust-border" />}
+                  {i < STEPS.length - 1 && (
+                    <div className="w-0.5 flex-1 bg-trust-border" />
+                  )}
                 </div>
                 <div className="pb-5">
                   <div className="text-[15px] font-bold">{step.t}</div>
@@ -113,14 +122,18 @@ export default async function VenderPage() {
             <div className="h-[34px] w-[34px] rounded-full bg-map-field2" />
             <div>
               <div className="text-[13px] font-bold">Rodrigo A.</div>
-              <div className="text-[12px] text-ink-muted">Vendió 45 ha · Concepción</div>
+              <div className="text-[12px] text-ink-muted">
+                Vendió 45 ha · Concepción
+              </div>
             </div>
           </div>
         </section>
 
         {/* Final CTA */}
         <section className="mt-12 rounded-card bg-brand-dark p-6 text-center text-white lg:p-8">
-          <div className="text-[18px] font-bold tracking-h2">¿Listo para vender?</div>
+          <div className="text-[18px] font-bold tracking-h2">
+            ¿Listo para vender?
+          </div>
           <p className="mt-1.5 text-[13px] text-[#bcd6c5]">
             Empezá con una tasación gratis hoy.
           </p>

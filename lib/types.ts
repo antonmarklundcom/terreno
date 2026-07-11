@@ -11,21 +11,12 @@
 import type { Polygon } from 'geojson';
 
 export type Tipo =
-  | 'lote_urbano'
-  | 'terreno_comercial'
-  | 'campo'
-  | 'quinta'
-  | 'loteamiento';
+  'lote_urbano' | 'terreno_comercial' | 'campo' | 'quinta' | 'loteamiento';
 
 export type Moneda = 'USD' | 'PYG';
 
 export type Servicio =
-  | 'agua'
-  | 'energia'
-  | 'desague'
-  | 'asfalto'
-  | 'empedrado'
-  | 'internet';
+  'agua' | 'energia' | 'desague' | 'asfalto' | 'empedrado' | 'internet';
 
 export type EstadoTitulo = 'con_titulo' | 'en_proceso';
 

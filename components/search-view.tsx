@@ -68,7 +68,9 @@ export function SearchView({
           <SearchFilters facets={facets} />
         </aside>
         <section className="w-[440px] flex-none overflow-y-auto border-r border-line-soft bg-canvas xl:w-[500px]">
-          <div className="sticky top-0 z-10 bg-canvas px-5 py-3.5">{resultsHeader}</div>
+          <div className="sticky top-0 z-10 bg-canvas px-5 py-3.5">
+            {resultsHeader}
+          </div>
           <div className="flex flex-col gap-3.5 px-5 pb-8">
             {listings.map((l) => (
               <div
@@ -107,7 +109,9 @@ export function SearchView({
           </button>
           <button
             type="button"
-            onClick={() => setMobileView((v) => (v === 'list' ? 'map' : 'list'))}
+            onClick={() =>
+              setMobileView((v) => (v === 'list' ? 'map' : 'list'))
+            }
             className="inline-flex flex-none items-center gap-1.5 rounded-pill border border-line-cool bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-soft"
           >
             <LayersIcon size={13} />
@@ -159,7 +163,10 @@ export function SearchView({
                 </button>
               </div>
               <div className="p-5 pb-8">
-                <SearchFilters facets={facets} onApplied={() => setSheetOpen(false)} />
+                <SearchFilters
+                  facets={facets}
+                  onApplied={() => setSheetOpen(false)}
+                />
               </div>
             </div>
           </div>

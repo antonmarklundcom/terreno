@@ -29,7 +29,11 @@ export function WaButton({
     try {
       const payload = JSON.stringify({
         ...lead,
-        source: lead.source ?? (typeof window !== 'undefined' ? window.location.pathname : undefined),
+        source:
+          lead.source ??
+          (typeof window !== 'undefined'
+            ? window.location.pathname
+            : undefined),
       });
       if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
         const blob = new Blob([payload], { type: 'text/plain' });

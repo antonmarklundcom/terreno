@@ -63,7 +63,9 @@ export function BuyerSearch({ facets }: { facets: Facets }) {
   const [tipo, setTipo] = useState<Tipo | ''>('lote_urbano');
 
   const ciudades = useMemo(
-    () => facets.departamentos.find((d) => d.nombre === departamento)?.ciudades ?? [],
+    () =>
+      facets.departamentos.find((d) => d.nombre === departamento)?.ciudades ??
+      [],
     [facets, departamento],
   );
   const barrios = useMemo(
@@ -145,7 +147,11 @@ export function BuyerSearch({ facets }: { facets: Facets }) {
         ))}
       </div>
 
-      <button type="button" onClick={submit} className="btn-primary mt-4 w-full">
+      <button
+        type="button"
+        onClick={submit}
+        className="btn-primary mt-4 w-full"
+      >
         <SearchIcon size={18} />
         Buscar terrenos
       </button>

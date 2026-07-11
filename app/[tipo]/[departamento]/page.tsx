@@ -70,9 +70,7 @@ export default async function LandingDeptoPage({
   if (!r) notFound();
 
   const plural = TIPO_PLURAL[r.tipo];
-  const ciudades = [
-    ...new Set(r.listings.map((l) => l.ubicacion.ciudad)),
-  ];
+  const ciudades = [...new Set(r.listings.map((l) => l.ubicacion.ciudad))];
 
   return (
     <div className="container-page max-w-2xl py-8 sm:py-12">

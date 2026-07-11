@@ -157,10 +157,17 @@ export default async function ListingDetailPage({
                 ? `desde ${formatUsd(listing.loteamiento!.precio_desde)}`
                 : formatUsd(listing.precio.monto)}
             </div>
-            <div className="tnum text-[14px] font-semibold text-brand">{per.label}</div>
+            <div className="tnum text-[14px] font-semibold text-brand">
+              {per.label}
+            </div>
           </div>
           <div className="tnum mt-0.5 text-[13px] text-ink-faint">
-            ≈ {formatGs(isLoteamiento ? listing.loteamiento!.precio_desde : listing.precio.monto)}
+            ≈{' '}
+            {formatGs(
+              isLoteamiento
+                ? listing.loteamiento!.precio_desde
+                : listing.precio.monto,
+            )}
           </div>
         </div>
 
@@ -175,7 +182,10 @@ export default async function ListingDetailPage({
                 />
               </div>
               <div className="border-b border-line-soft">
-                <Fact label="Desde" value={formatUsd(listing.loteamiento!.precio_desde)} />
+                <Fact
+                  label="Desde"
+                  value={formatUsd(listing.loteamiento!.precio_desde)}
+                />
               </div>
               <div className="border-r border-line-soft">
                 <Fact
@@ -198,11 +208,18 @@ export default async function ListingDetailPage({
         ) : (
           <div className="mt-4 overflow-hidden rounded-card border border-line bg-surface">
             <div className="grid grid-cols-2 divide-x divide-line-soft [&>*:nth-child(-n+4)]:border-b [&>*]:border-line-soft">
-              <Fact label="Superficie" value={formatSuperficie(listing.tipo, listing.superficie_m2)} />
+              <Fact
+                label="Superficie"
+                value={formatSuperficie(listing.tipo, listing.superficie_m2)}
+              />
               <Fact label="Precio / unidad" value={per.label} />
               <Fact
                 label="Frente"
-                value={listing.dimensiones?.frente_m ? `${listing.dimensiones.frente_m} m` : '—'}
+                value={
+                  listing.dimensiones?.frente_m
+                    ? `${listing.dimensiones.frente_m} m`
+                    : '—'
+                }
               />
               <Fact
                 label="Dimensiones"
@@ -213,7 +230,10 @@ export default async function ListingDetailPage({
                 }
               />
               <Fact label="Esquina" value={listing.esquina ? 'Sí' : 'No'} />
-              <Fact label="Financiación" value={FINANCIACION_LABEL[listing.financiacion]} />
+              <Fact
+                label="Financiación"
+                value={FINANCIACION_LABEL[listing.financiacion]}
+              />
             </div>
           </div>
         )}
@@ -226,10 +246,14 @@ export default async function ListingDetailPage({
             </div>
             <div>
               <div className="text-[13px] font-bold text-brand">
-                {listing.estado_titulo === 'con_titulo' ? 'Con título' : 'Título en proceso'}
+                {listing.estado_titulo === 'con_titulo'
+                  ? 'Con título'
+                  : 'Título en proceso'}
               </div>
               <div className="text-[11px] text-ink-muted">
-                {listing.estado_titulo === 'con_titulo' ? 'Verificado' : 'En trámite'}
+                {listing.estado_titulo === 'con_titulo'
+                  ? 'Verificado'
+                  : 'En trámite'}
               </div>
             </div>
           </div>
@@ -242,7 +266,9 @@ export default async function ListingDetailPage({
                 {FINANCIACION_LABEL[listing.financiacion]}
               </div>
               <div className="text-[11px] text-ink-muted">
-                {listing.financiacion === 'cuotas' ? 'Planes disponibles' : 'Pago único'}
+                {listing.financiacion === 'cuotas'
+                  ? 'Planes disponibles'
+                  : 'Pago único'}
               </div>
             </div>
           </div>

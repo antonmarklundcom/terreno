@@ -18,7 +18,10 @@ export interface LeadResult {
   ok: true;
   /** Destination WhatsApp number (digits) the front-end can deep-link to. */
   wa_number: string;
-  loggers: Array<{ name: string; status: 'fulfilled' | 'rejected' | 'skipped' }>;
+  loggers: Array<{
+    name: string;
+    status: 'fulfilled' | 'rejected' | 'skipped';
+  }>;
 }
 
 async function postWithRetry(
@@ -77,7 +80,9 @@ export async function processLead(input: LeadInput): Promise<LeadResult> {
 
   const results = await Promise.allSettled(
     jobs.map((j) =>
-      j.url ? postWithRetry(j.url, enriched) : Promise.reject(new Error('skip')),
+      j.url
+        ? postWithRetry(j.url, enriched)
+        : Promise.reject(new Error('skip')),
     ),
   );
 

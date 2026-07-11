@@ -37,9 +37,16 @@ export default async function BuscarPage({
     filters.ciudad ?? filters.departamento,
     filters.tipo ? tipoLabel(filters.tipo) : undefined,
   ].filter(Boolean);
-  const summary = summaryParts.length ? summaryParts.join(' · ') : 'Todo Paraguay';
+  const summary = summaryParts.length
+    ? summaryParts.join(' · ')
+    : 'Todo Paraguay';
 
   return (
-    <SearchView listings={data} total={total} facets={facets} summary={summary} />
+    <SearchView
+      listings={data}
+      total={total}
+      facets={facets}
+      summary={summary}
+    />
   );
 }

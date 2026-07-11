@@ -31,7 +31,11 @@ export async function generateMetadata({
     title: article.titulo,
     description: article.resumen,
     alternates: { canonical: `/guias/${article.slug}` },
-    openGraph: { type: 'article', title: article.titulo, description: article.resumen },
+    openGraph: {
+      type: 'article',
+      title: article.titulo,
+      description: article.resumen,
+    },
   };
 }
 
@@ -86,8 +90,12 @@ export default async function GuiaPage({
                 key={i}
                 className="my-6 rounded-r-card border-l-[3px] border-brand bg-trust-bg p-4"
               >
-                <div className="mb-1 text-[13px] font-bold text-brand">Señal de alerta</div>
-                <p className="text-[14.5px] leading-relaxed text-ink-prose">{block.texto}</p>
+                <div className="mb-1 text-[13px] font-bold text-brand">
+                  Señal de alerta
+                </div>
+                <p className="text-[14.5px] leading-relaxed text-ink-prose">
+                  {block.texto}
+                </p>
               </div>
             );
           }
@@ -99,14 +107,19 @@ export default async function GuiaPage({
                     <span className="flex h-6 w-6 flex-none items-center justify-center rounded-tile bg-brand-tint text-[13px] font-bold text-brand">
                       {j + 1}
                     </span>
-                    <span className="text-[15px] leading-relaxed text-ink-prose">{it}</span>
+                    <span className="text-[15px] leading-relaxed text-ink-prose">
+                      {it}
+                    </span>
                   </li>
                 ))}
               </ol>
             );
           }
           return (
-            <p key={i} className="mb-4 text-[15.5px] leading-[1.62] text-ink-prose">
+            <p
+              key={i}
+              className="mb-4 text-[15.5px] leading-[1.62] text-ink-prose"
+            >
               {block.texto}
             </p>
           );
@@ -152,7 +165,9 @@ export default async function GuiaPage({
         <div className="flex items-center justify-between gap-3 rounded-card bg-brand-dark p-4 text-white">
           <div>
             <div className="text-[15px] font-bold">¿Tenés un terreno?</div>
-            <div className="mt-0.5 text-[13px] text-[#bcd6c5]">Tasación gratis en 48 h.</div>
+            <div className="mt-0.5 text-[13px] text-[#bcd6c5]">
+              Tasación gratis en 48 h.
+            </div>
           </div>
           <Link href="/vender" className="btn-light flex-none px-4 py-2.5">
             Vender

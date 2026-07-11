@@ -9,21 +9,29 @@ loteamientos**. It is three things at once:
 3. **A content + services hub** — investment guides and a directory of
    land-related services (tasador, escribano, agrimensor).
 
-Spanish UI, mobile-first (designed at 360 px), prices in **US$ primary / Gs.
-secondary**. House style: calm Scandinavian minimalism — the **map + key data
-are the hero of every card and detail page; photos are secondary**.
+Spanish UI (voseo es-PY), mobile-first (designed at 360 px), prices in **US$
+primary / Gs. secondary**. House style: calm Scandinavian minimalism — the
+**map + key data are the hero of every card and detail page; photos are
+secondary**.
 
-> Design source of truth: [`docs/DESIGN_HANDOFF.md`](docs/DESIGN_HANDOFF.md) and
-> the prototype [`docs/Terreno.dc.html`](docs/Terreno.dc.html). Design tokens are
-> wired into [`tailwind.config.ts`](tailwind.config.ts) — components read the
-> theme, never hardcoded hex.
+> **The architecture contract is [`ARCHITECTURE.md`](ARCHITECTURE.md).** It is
+> the founder-reviewed source of truth for the stack, data model, the two-repo
+> split with propia.com.py, the cross-posting sync design, and the milestone
+> plan with STOP gates. When code and that file disagree, one of them is fixed
+> in the same PR. Design source of truth:
+> [`docs/DESIGN_HANDOFF.md`](docs/DESIGN_HANDOFF.md) and the prototype
+> [`docs/Terreno.dc.html`](docs/Terreno.dc.html) — design tokens are wired into
+> [`tailwind.config.ts`](tailwind.config.ts); components read the theme, never
+> hardcoded hex.
 
 ## Stack
 
 - **Next.js 15** (App Router) + **TypeScript** (strict) + **Tailwind CSS**
 - **MapLibre GL JS** + free Carto raster tiles (no API key, no billing)
 - **zod** on every API input
-- Node **22.x** (LTS)
+- **MySQL + Drizzle ORM** — terreno's own database (lands in M1; today the site
+  runs on the checked-in seed)
+- Node **22.x** (LTS), hosted on Hostinger Cloud (own Node.js app)
 
 ## Getting started
 
@@ -32,14 +40,23 @@ npm install
 cp .env.example .env.local   # fill the MINIMUM VIABLE subset (see below)
 npm run dev                  # http://localhost:3000
 npm run build && npm start   # production build
-npm run typecheck            # strict TS, no emit
+```
+
+Verification rails (run in CI on every push/PR):
+
+```bash
+npm run lint         # ESLint flat config (next preset + prettier)
+npm run typecheck    # strict TS, no emit
+npm test             # vitest — pure-logic unit tests (no DB needed)
+npm run build        # next build
+npm run format       # prettier --write (format:check verifies)
 ```
 
 ## Routes
 
 | Route | Rendering | Purpose |
 | --- | --- | --- |
-| `/` | SSG | Home (Option A: dual-path browse + sell) |
+| `/` | SSG | Home (dual-path browse + sell) |
 | `/buscar` | SSR (dynamic) | Search results — split map + list, URL-driven filters |
 | `/terreno/[slug]` | SSG + ISR | Listing detail (map-first) |
 | `/[tipo]/[departamento]` | SSG + ISR | Programmatic SEO landing (e.g. `/lotes/central`) |
@@ -50,7 +67,8 @@ npm run typecheck            # strict TS, no emit
 | `/como-funciona`, `/sobre-nosotros`, `/legal/[slug]` | SSG | Static pages |
 | `/api/v1/listings`, `/api/v1/listings/[slug]` | Route handler | App-first listings API |
 | `/api/leads`, `/api/v1/leads` | Route handler | Lead intake / orchestrator |
-| `/api/revalidate` | Route handler | On-demand ISR webhook (Phase 2 stub) |
+| `/api/revalidate` | Route handler | On-demand ISR webhook (token-gated) |
+| `/api/health` | Route handler | Uptime + data-source signal (curl-friendly) |
 | `/sitemap.xml`, `/robots.txt` | Generated | From repo data |
 
 `[tipo]` slugs: `lotes` · `terrenos-comerciales` · `campos` · `quintas` ·
@@ -70,8 +88,8 @@ getFeaturedListings(limit?)
 getFacets()                  // departamentos → ciudades → barrios cascade + counts
 ```
 
-- **Build 1** reads from `lib/seed/listings.ts` (a typed seed array, ~40
-  listings). Nothing else imports the seed — enforced and verifiable:
+- **Today** the repo reads from `lib/seed/listings.ts` (a typed seed array).
+  Nothing else imports the seed — enforced and verifiable:
 
   ```bash
   # returns nothing but the repo itself:
@@ -83,24 +101,18 @@ getFacets()                  // departamentos → ciudades → barrios cascade +
   they receive data as props. There is no client-side `fetch()` of listing data
   anywhere, so crawlers always get fully-rendered HTML.
 
-### How the JetEngine swap will work (Phase 2)
-
-The `Listing` shape and the repo signatures already mirror the future JetEngine
-REST response, so switching data sources is a **single-file change** inside
-`lib/listings-repo.ts` — never a frontend rebuild. Implement `fetchSource()`
-against `panel.terreno.com.py` (WP Application Password auth) and **keep the
-seed fallback permanently**: if the backend is unreachable, the repo falls back
-to the seed and the site still renders. See the commented pseudo-code in
-`fetchSource()`.
+- **M1 swaps the source, not the shape.** `fetchSource()` becomes a MySQL
+  read through Drizzle, with the seed kept as a **permanent fallback** (DB
+  unreachable → the site still renders). That is a single-file change inside
+  `lib/listings-repo.ts` — never a frontend rebuild. See ARCHITECTURE.md §4.
 
 ### Editing seed data
 
-Edit `lib/seed/listings.ts`. Each listing is built with a small internal helper;
-keep **`lat`/`lng` realistic** so map pins land in the right city. `superficie`
-is always stored in **m²** (canonical); hectáreas and `precio/m²` are derived at
-display time. `featured_until` is a Unix timestamp (a listing is “Destacado”
-only while it is in the future). Guides live in `lib/seed/guides.ts`, the service
-directory in `lib/seed/services.ts`.
+Edit `lib/seed/listings.ts`. Keep **`lat`/`lng` realistic** so map pins land in
+the right city. `superficie` is always stored in **m²** (canonical); hectáreas
+and `precio/m²` are derived at display time. `featured_until` is a Unix
+timestamp (a listing is “Destacado” only while it is in the future). Guides live
+in `lib/seed/guides.ts`, the service directory in `lib/seed/services.ts`.
 
 ## Leads & WhatsApp routing
 
@@ -133,38 +145,31 @@ NEXT_PUBLIC_BUSINESS_NAME=Terreno
 NEXT_PUBLIC_FEATURE_FEATURED_BADGES=true
 ```
 
-Everything else (`GHL_WEBHOOK_URL`, `SHEETS_WEBHOOK_URL`, `REVALIDATE_TOKEN`,
-and the `JETENGINE_*` Phase-2 vars) self-disables when empty. See
-[`.env.example`](.env.example). Secrets live in the host panel, never in the repo.
+Everything else (`DATABASE_URL`, `GHL_WEBHOOK_URL`, `SHEETS_WEBHOOK_URL`,
+`REVALIDATE_TOKEN`, and the deferred sync vars) self-disables when empty. See
+[`.env.example`](.env.example) and ARCHITECTURE.md §10. Secrets live in the host
+panel, never in the repo.
 
 ## Deployment (Hostinger managed Node.js Web App)
 
-> Document-only for Build 1 — do not deploy from here. **Never** use
-> `output: 'export'` (we need SSR + ISR + route handlers).
+**Never** use `output: 'export'` — we need SSR + ISR + route handlers.
 
 1. hPanel → **Websites → Add Website → Node.js Apps → Import Git Repository**.
-2. Branch `main`, **Next.js** preset, root `./`.
-3. Node version = current LTS (**22.x**, not the newest major).
-4. Add env vars from the `.env.example` minimum subset.
-5. **Deploy**, then attach the domain.
-6. Standard `build` / `start` scripts. CI runs `npm ci && npm run build` on every
-   push (`.github/workflows/ci.yml`).
+2. Branch `main`, **Next.js** preset, root `./`, build `npm run build`, start
+   `npm run start`.
+3. Node version = **22.x** (LTS, not the newest major).
+4. Add the minimum-viable env vars above.
+5. **Deploy**, then attach `terreno.com.py` and enable SSL in hPanel.
+6. Health check: `curl https://terreno.com.py/api/health` returns
+   `{"status":"ok",…}`.
 
-## Operations — who responds to leads
+CI (`.github/workflows/ci.yml`) runs lint → typecheck → test → build →
+`npm audit --audit-level=high` on every push and PR.
 
-- **Valuation & service leads → our pipeline.** These always reach our WhatsApp
-  number / CRM; our team responds, valuates and coordinates the partner.
-- **Broker listing contacts → the broker’s WhatsApp.** We connect the buyer
-  directly to the broker who owns the listing.
-- **`casa_propia` listing contacts → our pipeline.** Owner-direct listings route
-  to us so we can broker the sale.
+## Milestones
 
-## Phase 2 (not built now)
-
-- Wire `lib/listings-repo.ts` `fetchSource()` to the JetEngine REST API on
-  `panel.terreno.com.py` (WP Application Password); keep the seed fallback.
-- On-demand ISR via `/api/revalidate`, triggered by a WP webhook (token-gated).
-- Decide loteamiento parent/child modeling before bulk seeding in JetEngine
-  (Build 1 models `loteamiento` as a `tipo`, not a parent/child relation).
-- Turn on the GHL + Sheets fan-out.
-- Flip `featured_until` from a visual badge to a paid placement.
+The build is sequential with STOP gates — see ARCHITECTURE.md §12. **M0**
+(rails + deploy) and **M1** (own MySQL DB + seam swap) make terreno a fully
+standalone site. **M2–M3** (cross-posting sync with propia.com.py) are
+deliberately deferred; `docs/PROPIA-MIGRATION.md` is the note handed to a
+propia.node session when that work begins.

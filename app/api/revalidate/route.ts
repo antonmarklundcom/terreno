@@ -17,7 +17,11 @@ export async function POST(req: Request) {
 
   if (!token) {
     // Feature self-disables when the token is unset.
-    return NextResponse.json({ ok: true, revalidated: false, reason: 'disabled' });
+    return NextResponse.json({
+      ok: true,
+      revalidated: false,
+      reason: 'disabled',
+    });
   }
 
   const provided =

@@ -1,0 +1,11 @@
+.next/
+node_modules/
+package-lock.json
+next-env.d.ts
+docs/Terreno.dc.html
+public/
+
+# Hand-authored docs (the ARCHITECTURE.md contract, README, design handoff,
+# skills) are prose, not code — keep them out of Prettier's opinionated
+# markdown reflow.
+*.md

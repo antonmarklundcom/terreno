@@ -115,9 +115,10 @@ export function SearchFilters({
   );
 
   const ciudades =
-    facets.departamentos.find((d) => d.nombre === current.departamento)?.ciudades ??
-    [];
-  const barrios = ciudades.find((c) => c.nombre === current.ciudad)?.barrios ?? [];
+    facets.departamentos.find((d) => d.nombre === current.departamento)
+      ?.ciudades ?? [];
+  const barrios =
+    ciudades.find((c) => c.nombre === current.ciudad)?.barrios ?? [];
 
   const toM2 = (raw: string) => {
     if (!raw) return undefined;
@@ -241,7 +242,9 @@ export function SearchFilters({
 
       <Section
         title="Precio"
-        right={<span className="text-[11px] font-semibold text-ink-faint">US$</span>}
+        right={
+          <span className="text-[11px] font-semibold text-ink-faint">US$</span>
+        }
       >
         <RangeRow
           minLabel="US$ mín."
@@ -361,7 +364,9 @@ function RangeRow({
         defaultValue={minDefault}
         placeholder={minLabel}
         onBlur={(e) => onMin(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && onMin((e.target as HTMLInputElement).value)}
+        onKeyDown={(e) =>
+          e.key === 'Enter' && onMin((e.target as HTMLInputElement).value)
+        }
         className="tnum w-full rounded-[8px] border border-line-warm bg-fill px-2.5 py-2 text-[13px] outline-none focus:border-brand"
       />
       <span className="text-ink-faintest">—</span>
@@ -371,7 +376,9 @@ function RangeRow({
         defaultValue={maxDefault}
         placeholder={maxLabel}
         onBlur={(e) => onMax(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && onMax((e.target as HTMLInputElement).value)}
+        onKeyDown={(e) =>
+          e.key === 'Enter' && onMax((e.target as HTMLInputElement).value)
+        }
         className="tnum w-full rounded-[8px] border border-line-warm bg-fill px-2.5 py-2 text-[13px] outline-none focus:border-brand"
       />
     </div>

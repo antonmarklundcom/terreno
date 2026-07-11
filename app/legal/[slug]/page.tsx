@@ -83,13 +83,19 @@ export default async function LegalPage({
 
   return (
     <div className="container-page max-w-prose py-8 sm:py-12">
-      <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px]">{doc.titulo}</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">{doc.intro}</p>
+      <h1 className="text-[27px] font-bold tracking-h1 sm:text-[32px]">
+        {doc.titulo}
+      </h1>
+      <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
+        {doc.intro}
+      </p>
       <div className="mt-6 space-y-6">
         {doc.secciones.map((s) => (
           <section key={s.h}>
             <h2 className="text-[17px] font-bold tracking-h2">{s.h}</h2>
-            <p className="mt-1.5 text-[15px] leading-[1.62] text-ink-prose">{s.p}</p>
+            <p className="mt-1.5 text-[15px] leading-[1.62] text-ink-prose">
+              {s.p}
+            </p>
           </section>
         ))}
       </div>

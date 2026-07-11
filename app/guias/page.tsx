@@ -47,7 +47,9 @@ export default function GuiasPage() {
             className="card flex items-center justify-between gap-3 p-4 transition-shadow hover:shadow-raised"
           >
             <div>
-              <div className="text-[14.5px] font-semibold leading-snug">{g.titulo}</div>
+              <div className="text-[14.5px] font-semibold leading-snug">
+                {g.titulo}
+              </div>
               <div className="mt-0.5 text-[12.5px] text-ink-faint">
                 {g.categoria} · {g.lectura_min} min
               </div>
