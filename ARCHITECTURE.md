@@ -1,22 +1,40 @@
 # ARCHITECTURE — terreno.com.py
 
-> **Status: PLAN, awaiting founder review. Supersedes the JetEngine/WordPress
-> "Phase 2" direction described in the current README.** This document is the
-> contract; when code and this file disagree, fix one of them in the same PR.
+> **Authored by Fable 5 (planning/architecture model) for handoff to
+> Sonnet 5 / Opus 4.8 build sessions.** Last revised 2026-07-16, after
+> founder review of M0–M1 and the CRM/admin scope decision (§8).
+>
+> **Status: CONTRACT + LIVE. M0 and M1 are shipped (PRs #5–#7) and the site
+> is live on Hostinger.** This document is the contract; when code and this
+> file disagree, fix one of them in the same PR. Supersedes the old
+> JetEngine/WordPress direction (removed in M1).
 >
 > terreno.com.py is the land-only sibling of **propia.com.py**
-> (`antonmarklundcom/propia.node`). It follows the same playbook
-> (`.claude/skills/listing-site-hostinger/SKILL.md` in propia.node) and reuses
-> propia's proven patterns: `listing_sources` provenance with
+> (`antonmarklundcom/propia.node`). It follows the shared playbook — vendored
+> in this repo at `.claude/skills/listing-site-hostinger/SKILL.md` — and
+> reuses propia's proven patterns: `listing_sources` provenance with
 > `content_hash` + `dedup_key`, a `crm.ts` CRM boundary, `leads.vertical`
 > attribution, and rails-first milestones with STOP gates.
+>
+> The original schema `[VERIFY vs propia.node]` flags were **resolved in
+> M1**: `lib/db/schema.ts` was reconciled against propia's real
+> `src/db/schema.ts` (see PR #7). Still open: the exact land-type set from
+> propia's `verticals.ts` (§3, §5 rule 6) — resolved by the propia session
+> that implements `docs/PROPIA-MIGRATION.md`.
 
-> ⚠️ **Verification note.** This plan was written without read access to
-> propia.node (session repo scope denied the add). Every place where terreno
-> must byte-for-byte match propia is marked **`[VERIFY vs propia.node]`**.
-> Resolve all of these against propia's actual `SKILL.md`,
-> `ARCHITECTURE.md`, `src/db/schema.ts`, `src/config/verticals.ts` and
-> `src/lib/crm.ts` in the first implementation session — before M1 merges.
+## 0. Model tiering — who does what
+
+One rule for every future session in this repo:
+
+| Model | Use for | Never for |
+| --- | --- | --- |
+| **Fable 5** | Architecture, spec/schema decisions, cross-repo contract changes (feed shape, canonical rule), gap analysis, milestone STOP-gate reviews, revising this document | Routine implementation — don't burn Fable time on mechanical build work |
+| **Opus 4.8** | The hardest single problems: sync dedup/upsert semantics (M4), admin auth, anything where a subtle bug corrupts data | Templated page/CRUD work |
+| **Sonnet 5** | Everything else — most milestone build sessions, pages, CRUD, copy, tests, wiring | Changing this contract or the feed/canonical contract |
+
+Each milestone below names its default model. A build session that discovers
+the contract is wrong stops and escalates to a Fable session rather than
+improvising.
 
 ---
 
@@ -50,11 +68,12 @@ optimizes for **one person being able to debug it with curl at 11pm**.
 | Maps | MapLibre GL JS + Carto raster tiles | No API key, no billing |
 | DB | **MySQL (Hostinger Cloud plan) + Drizzle ORM** | Terreno's **own database + own DB user** on the shared plan — never propia's DB (§4) |
 | Validation | zod on every API input | Already the rule |
-| CRM | GoHighLevel via `lib/crm.ts` boundary | Port of propia's `src/lib/crm.ts` pattern (§8) `[VERIFY vs propia.node]` |
+| CRM / leads | **Local-first**: leads persist to terreno's own `leads` table + founder admin backend (§8, §8b) | GHL stays an optional, env-gated adapter behind `lib/crm.ts` — connect later, zero code change |
+| Admin | `/admin` in this app — password-gated listings CRUD + leads inbox (§8b) | Replaces Drizzle Studio as founder intake |
 | Hosting | Hostinger Cloud — **own Node.js app**, domain terreno.com.py | Same plan as propia, separate app + separate deploy |
 | Cron | hPanel cron → token-gated route handlers | No long-running workers on managed Node |
 | CI | GitHub Actions: lint + typecheck + test + build | Day-0 rails land in PR #1 (M0) |
-| Node | 22.x LTS | Pin in CI and hPanel `[VERIFY vs propia.node SKILL.md for exact pin]` |
+| Node | 22.x LTS | Pinned in CI and hPanel (M0) |
 
 ## 3. The one big decision: how the two sites share listings
 
@@ -150,7 +169,8 @@ mysql2) — Hostinger shared MySQL is connection-stingy.
 
 Field naming and table shapes must align with propia's `src/db/schema.ts`
 wherever the concept is shared, so the feed mapping stays mechanical
-**`[VERIFY every table below vs propia.node schema before M1 merges]`**.
+(reconciled against propia's real `src/db/schema.ts` in M1 — see PR #7;
+`lib/db/schema.ts` is now the source of truth for terreno's shapes).
 
 ```
 listings
@@ -295,28 +315,68 @@ Concretely:
 - Cost acknowledged: propia cedes land-SERP presence to terreno. Same owner,
   and terreno converts better for land — that's the strategy, not a bug.
 
-## 8. Leads & CRM boundary
+## 8. Leads — local-first, CRM optional
+
+**Founder decision (2026-07-16): no GHL for now. Terreno gets its own
+working admin backend; GHL becomes an optional adapter to connect later.**
 
 **Rule: the capturing site processes the lead; leads are never synced between
 sites.** Listings sync; leads don't.
 
-- `lib/crm.ts` is the **only** module that talks to GHL — a port of propia's
-  `src/lib/crm.ts` boundary `[VERIFY signatures vs propia.node]`. Everything
-  else (route handlers, `lib/leads.ts` orchestrator) calls `crm.ts`; no GHL
-  URL appears anywhere else.
+- **The local `leads` table is the system of record.** Every lead submitted
+  through `/api/leads` / `/api/v1/leads` is written to terreno's own DB
+  first (with the seed-fallback caveat: if the DB is unreachable the
+  WhatsApp action still succeeds and the miss is logged — the DB write is a
+  logger, not a gate).
 - Every lead carries `vertical: 'terreno'` (propia's `leads.vertical`
   pattern) plus **`capture_site`** ('terreno.com.py' here) and
   **`origin_site`** (from the listing's `origin` — this is how the origin
-  site gets attribution for leads on cross-posted listings). One GHL account,
-  one land pipeline; the founder filters/reports by these fields.
+  site gets attribution for leads on cross-posted listings), and
+  `listing_dedup_key` when applicable.
+- `lib/crm.ts` is still created, as the **only** module that would ever talk
+  to GHL — but it is a thin, env-gated adapter: `GHL_WEBHOOK_URL` unset
+  (the current state) → it self-disables and the lead simply lives in the
+  local table + admin inbox. Connecting GHL later is setting one env var,
+  not a code change. The `crm_status` column tracks
+  `pending|sent|failed|disabled`.
 - Existing routing table stays: `listing_contact` on a broker listing →
   broker's WhatsApp; `casa_propia` listings, valuation and service leads →
-  our number/pipeline. Broker WhatsApp routing works identically for
-  cross-posted listings because `owner.telefono_wa` travels in the feed.
+  our number. Broker WhatsApp routing works identically for cross-posted
+  listings because `owner.telefono_wa` travels in the feed.
 - Existing resilience rules stay: fan-out via `Promise.allSettled` with
-  retries; **logger/CRM failure never fails the user's WhatsApp action**;
-  unset env vars self-disable. New: leads are also written to the local
-  `leads` table (with `crm_status`) so nothing is lost when GHL is down.
+  retries; **no logger/CRM/DB failure ever fails the user's WhatsApp
+  action**; unset env vars self-disable.
+
+## 8b. Admin backend (`/admin`)
+
+The founder's operating console — replaces Drizzle Studio as the intake and
+lead-handling tool. Scope is deliberately small: one operator, no roles, no
+multi-tenancy.
+
+- **Auth:** single shared password (`ADMIN_PASSWORD`) → signed httpOnly
+  session cookie (`AUTH_SECRET`), constant-time compare, rate-limited login,
+  middleware-guarded `/admin/*` and `/api/admin/*`. No user table, no OAuth.
+  If either env var is unset, `/admin` 404s (self-disable rule).
+- **Listings CRUD:** create/edit/pause/mark-sold local (`origin='local'`)
+  listings — the casa_propia inventory and broker intake. Form mirrors the
+  `Listing` domain model (tipo, ubicación + map pin, superficie, precio,
+  frente/fondo/esquina, servicios, estado_titulo, financiación, images,
+  status). Writes go through the same validation (`lib/validation.ts`) as
+  the public API. Creating/editing triggers `/api/revalidate` for the
+  affected pages. Imported (`origin='propia'`) listings are **read-only**
+  here — they're owned by the origin site.
+- **Leads inbox:** newest-first table of the `leads` rows — contacto,
+  tipo_lead, listing link, origin_site, created_at — with a simple worked/
+  not-worked toggle (one status column, not a pipeline). This is the
+  revenue-path tool: valuation leads from `/vender` land here.
+- **Featured toggle:** set/clear `featured_until` per listing (timestamp
+  gating stays; still no billing — commission-only at launch, founder
+  decision 2026-07-16).
+- **Sync panel (after M4/M5):** last-sync age + counters, re-using
+  `/api/health` data, plus a "run import now" button hitting
+  `/api/sync/import`.
+- Images: keep it primitive — paste image URLs at first (same as seed rows).
+  A real upload pipeline is post-launch unless it proves blocking.
 
 ## 9. Publishing
 
@@ -334,6 +394,10 @@ repo.**
   propia's importer.
 - Terreno's `/vender` valuation funnel is unchanged — that's a lead flow,
   not a publish flow.
+- **The admin backend (§8b) is now also an intake path:** brokers who reach
+  the founder by WhatsApp get their listing entered in `/admin` directly
+  (`origin='local'`), no wizard needed. This further lowers the urgency of a
+  native wizard.
 - Build a native terreno wizard only if the funnel data ever proves land
   sellers bounce off the propia-branded wizard. Not before.
 
@@ -346,16 +410,20 @@ NEXT_PUBLIC_WHATSAPP=5959…
 NEXT_PUBLIC_BUSINESS_NAME=Terreno
 NEXT_PUBLIC_FEATURE_FEATURED_BADGES=true
 
-# M1
+# M1 (live)
 DATABASE_URL=mysql://terreno_user:…@localhost/terreno_prod
 
-# M2/M3 sync
+# M2 admin backend
+ADMIN_PASSWORD=…             # /admin login; unset → /admin self-disables
+AUTH_SECRET=…                # signs the session cookie
+
+# M4/M5 sync
 PROPIA_FEED_URL=https://propia.com.py/api/feed/terreno
 FEED_SHARED_SECRET=…         # same secret both directions
 SYNC_TOKEN=…                 # cron → /api/sync/import
 REVALIDATE_TOKEN=…
 
-# M4
+# optional — connect later, code self-disables while unset
 GHL_WEBHOOK_URL=…            # consumed ONLY by lib/crm.ts
 SHEETS_WEBHOOK_URL=…
 ```
@@ -363,108 +431,114 @@ SHEETS_WEBHOOK_URL=…
 Everything non-minimum self-disables when empty (existing rule, kept).
 **Deleted: all `JETENGINE_*` vars.**
 
-## 11. Audit of existing repo — keep / rewrite / delete
+## 11. Current status — built vs. missing (audited 2026-07-16)
 
-The repo contains a complete, well-built seed-powered frontend (PRs #1–#4).
-This plan keeps most of it and kills the WordPress direction.
+**✅ DONE — M0 (PR #6) and M1 (PR #7), site live on Hostinger:**
+- Full seed-powered frontend: home, `/buscar` split map+list, listing detail
+  at `/terreno/{slug}-{publicId}`, programmatic SEO landings, `/vender`
+  funnel, `/guias`, `/servicios`, static pages, sitemap/robots, JSON-LD.
+- Rails: ESLint + Prettier + Vitest + full CI (lint → typecheck → test →
+  build, plus a MySQL service container for the DB suite); `/api/health`
+  with real data-source signal.
+- Own MySQL + Drizzle (`lib/db/schema.ts`, reconciled against propia's real
+  schema): `listings`, `locations`, `owners`, `listing_sources`, `leads`.
+  Seam swapped — `fetchSource()` reads the DB, seed is the permanent
+  fallback. Idempotent seed importer (re-run = zero changes). JetEngine/WP
+  direction fully removed.
+- Lead orchestrator (`lib/leads.ts`): WhatsApp routing by owner_type,
+  resilient env-gated webhook fan-out.
 
-**KEEP (as-is):**
-- `app/` routes, `components/`, `tailwind.config.ts`, `docs/DESIGN_HANDOFF.md`,
-  `docs/Terreno.dc.html` — the design and pages are done and on-brand.
-- `lib/types.ts` domain model (add `origin` field), `lib/format.ts`,
-  `lib/slug.ts`, `lib/whatsapp.ts`, `lib/jsonld.ts`, `lib/validation.ts`,
-  `lib/parse-body.ts`, `lib/seed/*` (seed becomes the permanent DB fallback +
-  dev fixture).
-- The data-seam rule and `lib/listings-repo.ts` public API (signatures
-  unchanged).
-- Lead routing rules and resilience behavior in `lib/leads.ts`.
-
-**REWRITE:**
-- `lib/listings-repo.ts` `fetchSource()` internals — M1: MySQL via Drizzle,
-  seed fallback. Delete the JetEngine pseudo-code comment block.
-- `lib/leads.ts` — M4: extract GHL calls into new `lib/crm.ts`; add
-  `vertical`/`capture_site`/`origin_site` and local `leads`-table persistence.
-- `README.md` — M1: remove all JetEngine/WordPress/"Phase 2" content
-  (§"How the JetEngine swap will work", panel.terreno.com.py, WP Application
-  Passwords, the Phase-2 list); point to this file as the contract.
-- `.github/workflows/ci.yml` — M0: add lint + typecheck + test jobs (today it
-  only builds).
-- `app/api/revalidate/route.ts` — repurpose: caller is our importer, not a WP
-  webhook.
-
-**DELETE:**
-- `JETENGINE_*` block in `.env.example`.
-- Every remaining reference to JetEngine / panel.terreno.com.py / WP
-  Application Passwords (`grep -rn jetengine -i` must return zero after M1).
-
-**MISSING (added by M0 — day-0 rails the skill demands, absent today):**
-- No ESLint config (`next lint` script exists but no eslint dep/config),
-  no Prettier, no test runner, no tests, no lint/typecheck/test in CI,
-  no `/api/health`, `devDependencies` is empty (build toolchain was moved to
-  `dependencies` for Hostinger — keep that, it was learned the hard way in
-  PR #3 `[VERIFY vs SKILL.md]`).
+**❌ MISSING to launch (the remaining milestones, in order):**
+1. Admin backend `/admin` (§8b) — auth, listings CRUD, leads inbox,
+   featured toggle. *(Nothing exists; intake is currently Drizzle Studio.)*
+2. Local lead persistence + attribution + `lib/crm.ts` adapter (§8) —
+   leads currently fan out to unset webhooks and are stored nowhere.
+3. Both sync halves (§5): `/api/feed/listings` outbound and
+   `/api/sync/import` inbound. *(`lib/content-hash.ts` and the
+   `listing_sources` table already exist — the pipeline around them
+   doesn't.)*
+4. Propia-side work (separate repo, status unknown as of this revision):
+   feed endpoint, terreno importer source, canonical/sitemap rule —
+   `docs/PROPIA-MIGRATION.md` is the handoff.
+5. `/publicar` page, full es-PY copy audit, end-to-end launch verification.
 
 ## 12. Milestones (sequential, each ends at a STOP gate)
 
-Each milestone is one PR (or a small stack), CI green, founder reviews at the
-STOP gate before the next begins. No milestone starts early.
+Each milestone is one PR (or a small stack), CI green, founder reviews at
+the STOP gate before the next begins. No milestone starts early. Default
+build model is named per milestone (§0); Fable 5 reviews every STOP gate.
 
-### M0 — Rails + real deploy (PR #1 of this plan)
-ESLint (flat config, next preset) + Prettier + Vitest with first real tests
-(listings-repo filtering/facets, lead routing) + CI = lint → typecheck →
-test → build. Add `/api/health`. **Deploy the current seed-powered site to
-Hostinger** as its own Node.js app (hPanel → Git import, branch `main`,
-Node 22.x, minimum-viable env vars), attach terreno.com.py, verify SSR/ISR
-live. Delete `JETENGINE_*` from `.env.example`.
-**STOP gate:** CI green on PR; https://terreno.com.py serves the seed site;
-founder approves.
+**Re-sequencing note (2026-07-16):** sync moved *after* admin + leads.
+Propia's side of the sync hasn't started and its timeline is unknown, while
+admin + lead persistence are unblocked and sit directly on the revenue path
+(`/vender` leads currently aren't stored anywhere). Both sync halves are
+built and tested terreno-side against fixture feeds, so only the final
+end-to-end gate depends on propia.
 
-### M1 — MySQL + seam swap
-Create `terreno_prod` DB + user in hPanel. Drizzle schema (§4) — **first
-reconcile field names against propia's `src/db/schema.ts`** — migrations,
-`scripts/import-seed.ts` (idempotent: seed rows get
-`listing_sources.source='seed'`, dedup_key `seed:{id}`). Swap
-`fetchSource()` to DB with seed fallback. Repo tests run against MySQL in CI
-(service container). Rewrite README.
-**STOP gate:** production renders from DB; killing the DB still renders the
-site (fallback proven); seed import re-run = zero changes.
+### ~~M0 — Rails + real deploy~~ ✅ shipped (PR #6)
+### ~~M1 — MySQL + seam swap~~ ✅ shipped (PR #7)
 
-### M2 — Inbound sync: propia → terreno
-Prereq: propia ships its feed (see `docs/PROPIA-MIGRATION.md` — hand to a
-propia.node session first). Build `lib/sync/import.ts` + `/api/sync/import`
-+ hPanel cron (15 min). Full dedup semantics of §5, type mapping
-propia `property_type` → terreno `tipo`, ISR revalidate on change, sync
-counters in `/api/health`. Tests: fixture feed → import twice → second run
-all-unchanged; mutate one field → exactly one update.
-**STOP gate:** a land listing published on propia.com.py appears on
-terreno.com.py within 15 min; re-syncs create no duplicates (demonstrated in
-prod, not just tests).
+### M2 — Admin backend (build: Sonnet 5; auth review: Opus 4.8)
+`/admin` per §8b: password login (signed cookie, rate-limited,
+self-disabling), local-listings CRUD through existing validation, leads
+inbox, `featured_until` toggle, revalidate-on-write. Tests: auth middleware
+(no cookie → redirect; bad password → rate limit), CRUD round-trip in the
+DB suite.
+**STOP gate:** founder creates a real listing through `/admin` on
+production and it renders on the live site; `/admin` with env vars unset
+404s; a wrong password five times gets rate-limited.
 
-### M3 — Outbound feed + canonical/SEO contract
-`/api/feed/listings` (token, `origin='local'` only, §5 shape). Terreno side
-of §7: self-canonicals verified, sitemap = published listings + landings with
-listings. (Propia's importer + canonical/sitemap changes happen in
-propia.node per the migration note — coordinate, then verify end-to-end.)
-**STOP gate:** a founder-created terreno listing appears on propia.com.py;
-`curl` shows correct canonicals on both sites' detail pages; propia sitemap
-contains no land detail URLs, terreno's contains all of them.
+### M3 — Lead persistence + CRM adapter (build: Sonnet 5)
+Leads write to the local `leads` table first (system of record), carrying
+`vertical='terreno'`, `capture_site`, `origin_site`, `listing_dedup_key`;
+extract webhook calls into env-gated `lib/crm.ts` (`crm_status` tracked;
+everything self-disables while unset). Leads appear in the M2 inbox.
+**STOP gate:** a `/vender` valuation lead submitted on production shows up
+in the `/admin` leads inbox with correct attribution; killing the DB still
+leaves the WhatsApp button working.
 
-### M4 — CRM boundary + attribution
-Port `lib/crm.ts` from propia's pattern. Leads persist locally, then fan out;
-payload carries `vertical='terreno'`, `capture_site`, `origin_site`,
-`listing_dedup_key`. Wire real `GHL_WEBHOOK_URL`.
-**STOP gate:** test lead on a cross-posted (propia-origin) listing from
-terreno.com.py lands in GHL with `origin_site='propia.com.py'` and correct
-broker WhatsApp routing; a GHL outage does not break the WhatsApp button.
+### M4 — Sync engine, both halves, fixture-verified (build: Opus 4.8 —
+dedup/upsert semantics are the highest-risk code in the repo)
+Outbound `/api/feed/listings` (token, `origin='local'` only, §5 shape) and
+inbound `lib/sync/import.ts` + `/api/sync/import` (token) with full §5
+dedup semantics, propia `property_type` → terreno `tipo` mapping, ISR
+revalidate on change, sync counters in `/api/health`. Verified entirely
+against fixture feeds: import twice → second run all-unchanged; mutate one
+field → exactly one update; absent → paused; imported rows never re-export.
+**STOP gate:** fixture round-trip green in CI; `curl` of the live feed shows
+the §5 shape with only local listings; founder approves the feed contract
+as final before it's handed to propia.
 
-### M5 — Publishing link + es-PY copy audit
-Thin `/publicar` → propia's wizard. Full copy pass: voseo everywhere
-(publicá, vendé, encontrá), land vocabulary audit, WhatsApp CTA wording.
-**STOP gate:** end-to-end demo — landowner publishes on propia → listing on
-both sites → lead captured on terreno → GHL with attribution. Launch.
+### M5 — Propia integration + canonical contract (blocked on propia.node;
+terreno-side: Sonnet 5)
+Hand `docs/PROPIA-MIGRATION.md` to a propia.node session (its feed, its
+terreno importer source, its cross-domain canonical + sitemap exclusion —
+§7). Then terreno-side: hPanel cron (15 min) on `/api/sync/import`,
+`PROPIA_FEED_URL` + `FEED_SHARED_SECRET` set both sides, sync panel in
+`/admin`.
+**STOP gate (in production, not just tests):** a land listing published on
+propia appears on terreno within 15 min and vice versa; re-syncs create no
+duplicates; `curl` shows terreno-canonical on both sites' land detail
+pages; propia's sitemap contains no land detail URLs, terreno's contains
+all of them.
+
+### M6 — Publish link, copy audit, launch (build: Sonnet 5)
+Thin `/publicar` → propia's wizard (with `/admin` as the WhatsApp-intake
+alternative, §9). Full copy pass: voseo everywhere (publicá, vendé,
+encontrá), land-vocabulary audit, WhatsApp CTA wording. Final SEO sweep:
+canonicals, `noindex` on empty landings, JSON-LD validity.
+**STOP gate = launch:** end-to-end demo — landowner publishes on propia →
+listing on both sites → lead captured on terreno → visible in `/admin`
+with `origin_site='propia.com.py'` and correct broker WhatsApp routing.
+
+### Estimated effort to launch
+Four build sessions in this repo (M2, M3, M4, M6 — one each; M5's
+terreno-side is small enough to fold into M4's session or a short
+follow-up) **plus one propia.node session** for the migration note. M5's
+end-to-end gate is the only external dependency.
 
 ---
 
 *Companion doc: `docs/PROPIA-MIGRATION.md` — the minimal changes propia.node
 needs (feed endpoint, importer source, canonical/sitemap rule) to be handed
-to a propia session before M2.*
+to a propia session before M5's gate.*
