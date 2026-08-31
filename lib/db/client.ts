@@ -24,6 +24,12 @@ export function getDb(): MySql2Database<typeof schema> {
       connectionLimit: 5,
       // Keep JSON columns as parsed values, dates as JS Dates.
       timezone: 'Z',
+      // Bound the wait queue and fail fast: a stuck request must release its
+      // Node process in seconds, not hang forever and eat into Hostinger's
+      // shared account-wide process cap.
+      waitForConnections: true,
+      queueLimit: 24,
+      connectTimeout: 8_000,
     });
     cached = drizzle(cachedPool, { schema, mode: 'default' });
   }
