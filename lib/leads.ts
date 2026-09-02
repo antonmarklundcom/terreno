@@ -37,6 +37,10 @@ async function postWithRetry(
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body),
+        // Bound each attempt so a stuck webhook can't hold the Node process
+        // open indefinitely — same fix as vendercrm PR #84, propia.node PR
+        // #81, trabajo PR #82.
+        signal: AbortSignal.timeout(10_000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return;
